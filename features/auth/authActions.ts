@@ -18,7 +18,6 @@ export const login = createAsyncThunk<
 >("auth/login", async (form: LoginForm, { rejectWithValue }) => {
   try {
     const { data } = await axiosClient.post("/auth/login", form);
-    console.log(data);
     await saveToken(data.token);
     await saveExTime();
     return data;
@@ -27,7 +26,7 @@ export const login = createAsyncThunk<
     if (error.response && error.response.data) {
       return rejectWithValue(error.response.data);
     }
-    return rejectWithValue({ message: "Something went wrong" });
+    return rejectWithValue({ message: "Error in login action" });
   }
 });
 
@@ -46,7 +45,7 @@ export const register = createAsyncThunk<
     if (error.response && error.response.data) {
       return rejectWithValue(error.response.data);
     }
-    return rejectWithValue({ message: "Something went wrong" });
+    return rejectWithValue({ message: "Error in register action" });
   }
 });
 
@@ -74,7 +73,7 @@ export const verifyCode = createAsyncThunk<
     if (error.response && error.response.data) {
       return rejectWithValue(error.response.data);
     }
-    return rejectWithValue({ message: "Something went wrong" });
+    return rejectWithValue({ message: "Error in verifyCode action" });
   }
 });
 
@@ -92,7 +91,7 @@ export const verifyEmail = createAsyncThunk<
     if (error.response && error.response.data) {
       return rejectWithValue(error.response.data);
     }
-    return rejectWithValue({ message: "Something went wrong" });
+    return rejectWithValue({ message: "Error in verifyEmail action" });
   }
 });
 
@@ -118,7 +117,41 @@ export const resetPassword = createAsyncThunk<
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
       }
-      return rejectWithValue({ message: "Something went wrong" });
+      return rejectWithValue({ message: "Error in resetPassword action" });
     }
   },
 );
+
+export const updateUserIng = createAsyncThunk<
+  { user: User; message: string },
+  { userId: string; ids: number[] },
+  { rejectValue: ServerError }
+>("auth/updateUserIng", async ({ userId, ids }, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.put(`/users/${userId}/like`, { ids });
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({ message: "Error in updateUserIng action" });
+  }
+});
+
+export const updateUserAllergy = createAsyncThunk<
+  { user: User; message: string },
+  { userId: string; ids: number[] },
+  { rejectValue: ServerError }
+>("auth/updateUserAllergy", async ({ userId, ids }, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.put(`/users/${userId}/allergy`, { ids });
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({ message: "Error in updateUserAllergy action" });
+  }
+});

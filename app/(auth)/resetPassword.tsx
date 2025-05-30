@@ -9,10 +9,8 @@ import { StatusBar } from "expo-status-bar";
 import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  Image,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -85,18 +83,14 @@ export default function ResetPasswordScreen() {
 
   return loading ? (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" color="#0000ff" />
+      <ActivityIndicator size="large" color="#228B22" />
     </View>
   ) : (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Image
-          source={require("@/assets/images/logo-color.png")}
-          style={styles.logo}
-        />
+      <>
         <Text style={styles.title}>סיסמא חדשה</Text>
         <View style={styles.form}>
           <Text>סיסמא</Text>
@@ -133,7 +127,7 @@ export default function ResetPasswordScreen() {
           onPress={handleSubmit(onResetPassword)}
         />
         <StatusBar style="auto" />
-      </ScrollView>
+      </>
     </KeyboardAvoidingView>
   );
 }

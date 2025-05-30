@@ -1,4 +1,5 @@
 import CustomButton from "@/components/CustomButton";
+import { getAllergies } from "@/features/allergy/allergyActions";
 import { register } from "@/features/auth/authActions";
 import {
   setCode,
@@ -7,29 +8,28 @@ import {
   setPassword,
 } from "@/features/signUpForm/signUpFormSlice";
 import { AppDispatch, RootState } from "@/store";
+import { Allergy } from "@/types/allergy";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+export default function AllergiesScreen() {
+  const [allergies, setAllergies] = useState<Allergy[] | null>(null);
+  const [userAllergies, setUserAllergies] = useState<number[]>([]);
 
-export default function FoodiesScreen() {
-  const allergies = ["לקטוז", "גלוטן", "בוטנים", "צמחוני", "טבעוני"];
-  const [userAllergies, setUserAllergies] = useState<string[]>([]);
-
-  const toggleAllergy = (allergy: string) => {
-    const exists = userAllergies.includes(allergy);
+  const toggleAllergy = (allergy: Allergy) => {
+    const exists = userAllergies.includes(allergy.id);
     if (exists) {
-      const arr = userAllergies.filter((a) => a !== allergy);
+      const arr = userAllergies.filter((a) => a !== allergy.id);
       setUserAllergies(arr);
     } else {
-      setUserAllergies([...userAllergies, allergy]);
+      setUserAllergies([...userAllergies, allergy.id]);
     }
   };
   const dispatch = useDispatch<AppDispatch>();
@@ -41,7 +41,7 @@ export default function FoodiesScreen() {
   const router = useRouter();
 
   const onEndSignUp = async () => {
-    console.log(userAllergies);
+    // console.log(userAllergies);
     try {
       if (!email || !fullName || !password) {
         setError("משהו השתבש");
@@ -52,62 +52,73 @@ export default function FoodiesScreen() {
           fullName,
           email,
           password,
+          allergyIds: userAllergies,
         }),
       ).unwrap();
       dispatch(setFullName(""));
       dispatch(setEmail(""));
       dispatch(setPassword(""));
       dispatch(setCode(""));
-      router.push("/home");
+      router.push("/dontLike");
     } catch (error: any) {
       setError(error.message);
       console.error(error);
     }
   };
 
+  const fetchAllergies = async () => {
+    try {
+      const res = await dispatch(getAllergies()).unwrap();
+      setAllergies(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!allergies) {
+      fetchAllergies();
+    }
+  }, []);
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#228B22" />
       </View>
     );
   } else {
     return (
-      <>
-        <Image
-          source={require("@/assets/images/logo-color.png")}
-          style={styles.logo}
-        />
-        <View style={styles.container}>
-          <Text style={styles.title}>הרגישוית שלי</Text>
-          <View style={styles.grid}>
-            {allergies.map((allergy) => {
-              const isSelected = userAllergies.includes(allergy);
+      <View style={styles.container}>
+        <Text style={styles.title}>הרגישוית שלי</Text>
+        <View style={styles.grid}>
+          {allergies &&
+            allergies.map((allergy, index) => {
+              const isSelected = userAllergies.includes(allergy.id);
               return (
                 <Pressable
-                  key={allergy}
+                  key={index}
                   onPress={() => toggleAllergy(allergy)}
                   style={[styles.gridItem, isSelected && styles.selectedItem]}
                 >
-                  <Text>{allergy}</Text>
+                  <Text>{allergy.name}</Text>
                 </Pressable>
               );
             })}
-          </View>
-          {error && (
-            <Text
-              style={{
-                color: "crimson",
-                marginBottom: 10,
-              }}
-            >
-              {"\u2022 "}
-              {error}
-            </Text>
-          )}
-          <CustomButton content="סיום" onPress={onEndSignUp} />
         </View>
-      </>
+        {error && (
+          <Text
+            style={{
+              color: "crimson",
+              marginBottom: 10,
+            }}
+          >
+            {"\u2022 "}
+            {error}
+          </Text>
+        )}
+        <CustomButton content="המשך" onPress={onEndSignUp} />
+      </View>
     );
   }
 }
@@ -115,7 +126,7 @@ export default function FoodiesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
+    justifyContent: "center",
     padding: 20,
   },
   title: {

@@ -1,15 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
+import allergyReducer from "./features/allergy/allergyReducer";
 import authReducer from "./features/auth/authReducer";
 import counterReducer from "./features/counter/counterSlice";
+import ingredientsReducer from "./features/ingredients/ingredientsReducer";
 import signUpReducer from "./features/signUpForm/signUpFormSlice";
-import usersReducer from "./features/users/usersReducer";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     auth: authReducer,
     signUp: signUpReducer,
-    users: usersReducer,
+    allergies: allergyReducer,
+    ingredients: ingredientsReducer,
   },
 });
 

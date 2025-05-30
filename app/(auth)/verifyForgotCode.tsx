@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useForm } from "react-hook-form";
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -51,10 +50,6 @@ export default function VerifyForgotCodeScreen() {
 
   return (
     <>
-      <Image
-        source={require("@/assets/images/logo-color.png")}
-        style={styles.logo}
-      />
       {/* <Text style={styles.title}>אימות הרשמה</Text> */}
       <Text style={styles.content}>קוד אימות נשלח לכתובת של חשבונך</Text>
 

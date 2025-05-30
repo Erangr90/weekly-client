@@ -1,12 +1,9 @@
 import CustomButton from "@/components/CustomButton";
 import { Link, useRouter } from "expo-router";
-import { useEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function WelcomeScreen() {
   const router = useRouter();
-
-  useEffect(() => {}, []);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -21,12 +18,12 @@ export default function WelcomeScreen() {
           onPress={() => router.push("/signIn")}
         />
         <CustomButton
-          style={{ backgroundColor: "crimson" }}
+          style={{ backgroundColor: "red" }}
           content="התחבר באמצעות Google"
           onPress={() => {}}
         />
         <CustomButton
-          style={{ backgroundColor: "#A9A9A9" }}
+          style={{ backgroundColor: "#696969" }}
           content="התחבר באמצעות Apple"
           onPress={() => {}}
         />
@@ -43,15 +40,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    gap: 20,
+    gap: 30,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     alignSelf: "center",
+    marginBottom: 80,
   },
   link: {
-    color: "#4353fd",
+    color: "#228B22",
     fontWeight: "600",
     alignSelf: "center",
     fontSize: 16,

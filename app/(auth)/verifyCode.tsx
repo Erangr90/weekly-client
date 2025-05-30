@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useForm } from "react-hook-form";
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -45,16 +44,12 @@ export default function VerifyScreen() {
       });
       return;
     } else {
-      router.push("/foodies");
+      router.push("/allergies");
     }
   };
 
   return (
     <>
-      <Image
-        source={require("@/assets/images/logo-color.png")}
-        style={styles.logo}
-      />
       <Text style={styles.title}>אימות הרשמה</Text>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}

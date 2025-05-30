@@ -6,19 +6,21 @@ import {
   logout,
   register,
   resetPassword,
+  updateUserAllergy,
+  updateUserIng,
   verifyCode,
   verifyEmail,
 } from "./authActions";
 
 export interface AuthState {
-  user: User | null;
+  user: User | undefined;
   isLogin: boolean;
   loading: boolean;
   error?: ServerError;
 }
 
 const initialState: AuthState = {
-  user: null,
+  user: undefined,
   isLogin: false,
   loading: false,
   error: undefined,
@@ -29,6 +31,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // --- Register ---
     builder.addCase(register.fulfilled, (state, action) => {
       state.error = undefined;
       state.loading = false;
@@ -37,7 +40,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(register.rejected, (state, action) => {
       state.error = action.payload || { message: "Something went wrong" };
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
       state.loading = false;
     });
@@ -45,26 +48,28 @@ export const authSlice = createSlice({
       state.loading = true;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
+    // --- Verify Code ---
     builder.addCase(verifyCode.fulfilled, (state) => {
       state.loading = false;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
     builder.addCase(verifyCode.pending, (state) => {
       state.loading = true;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
     builder.addCase(verifyCode.rejected, (state, action) => {
       state.error = action.payload || { message: "Something went wrong" };
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
       state.loading = false;
     });
+    // --- Login ---
     builder.addCase(login.fulfilled, (state, action) => {
       state.error = undefined;
       state.loading = false;
@@ -74,68 +79,99 @@ export const authSlice = createSlice({
     builder.addCase(login.rejected, (state, action) => {
       state.error = action.payload || { message: "Something went wrong" };
       state.loading = false;
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
     });
     builder.addCase(login.pending, (state) => {
       state.error = undefined;
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
       state.loading = true;
     });
+    // --- Verify Email ---
     builder.addCase(verifyEmail.fulfilled, (state) => {
       state.loading = false;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
     builder.addCase(verifyEmail.pending, (state) => {
       state.loading = true;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
     builder.addCase(verifyEmail.rejected, (state, action) => {
       state.error = action.payload || { message: "Something went wrong" };
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
       state.loading = false;
     });
+    // --- Reset password ---
     builder.addCase(resetPassword.fulfilled, (state) => {
       state.loading = false;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
     builder.addCase(resetPassword.pending, (state) => {
       state.loading = true;
       state.error = undefined;
       state.isLogin = false;
-      state.user = null;
+      state.user = undefined;
     });
     builder.addCase(resetPassword.rejected, (state, action) => {
       state.error = action.payload || { message: "Something went wrong" };
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
       state.loading = false;
     });
+    // --- Logout ---
     builder.addCase(logout.fulfilled, (state) => {
       state.error = undefined;
       state.loading = false;
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
     });
     builder.addCase(logout.rejected, (state) => {
       state.loading = false;
-      state.user = null;
+      state.user = undefined;
       state.isLogin = true;
       state.error = { message: "Something went wrong" };
     });
     builder.addCase(logout.pending, (state) => {
       state.error = undefined;
-      state.user = null;
+      state.user = undefined;
       state.isLogin = false;
       state.loading = true;
+    });
+    // --- Update user's Ingredients ---
+    builder.addCase(updateUserIng.fulfilled, (state, action) => {
+      state.error = undefined;
+      state.loading = false;
+      state.user = action.payload.user;
+    });
+    builder.addCase(updateUserIng.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(updateUserIng.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Update user's Allergies ---
+    builder.addCase(updateUserAllergy.fulfilled, (state, action) => {
+      state.error = undefined;
+      state.loading = false;
+      state.user = action.payload.user;
+    });
+    builder.addCase(updateUserAllergy.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(updateUserAllergy.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
     });
   },
 });

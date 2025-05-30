@@ -104,18 +104,14 @@ export default function SignUpScreen() {
 
   return loading ? (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" color="#0000ff" />
+      <ActivityIndicator size="large" color="#228B22" />
     </View>
   ) : (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* <Image
-          source={require("@/assets/images/logo-color.png")}
-          style={styles.logo}
-        /> */}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
         <Text style={styles.title}>יצירת חשבון</Text>
         <View style={styles.form}>
           <Text>שם מלא</Text>
@@ -141,6 +137,7 @@ export default function SignUpScreen() {
             placeholder="סיסמא"
             secureTextEntry={true}
             autoCapitalize="none"
+            placeholderTextColor="gray"
           />
           <Text>אימות סיסמא</Text>
           <CustomInput
@@ -149,6 +146,7 @@ export default function SignUpScreen() {
             placeholder="אימות סיסמא"
             secureTextEntry={true}
             autoCapitalize="none"
+            placeholderTextColor="gray"
           />
           {errors.root && (
             <Text
@@ -183,8 +181,8 @@ export default function SignUpScreen() {
           onPress={handleSubmit(onSignUp)}
         />
         <StatusBar style="auto" />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 

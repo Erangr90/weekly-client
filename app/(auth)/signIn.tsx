@@ -9,11 +9,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -77,19 +75,16 @@ export default function SignInScreen() {
 
   return loading ? (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" color="#0000ff" />
+      <ActivityIndicator size="large" color="#228B22" />
     </View>
   ) : (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Image
-          source={require("@/assets/images/logo-color.png")}
-          style={styles.logo}
-        />
+      <>
         <Text style={styles.title}>התחברות</Text>
+
         <View style={styles.form}>
           <Text>כתובת אימייל</Text>
           <CustomInput
@@ -99,6 +94,7 @@ export default function SignInScreen() {
             autoCapitalize="none"
             keyboardType="email-address"
             autoComplete="email"
+            placeholderTextColor="gray"
           />
           <Text>סיסמא</Text>
           <CustomInput
@@ -107,6 +103,7 @@ export default function SignInScreen() {
             placeholder="סיסמא"
             secureTextEntry={true}
             autoCapitalize="none"
+            placeholderTextColor="gray"
           />
           {errors.root && (
             <Text
@@ -137,13 +134,13 @@ export default function SignInScreen() {
         </View>
         <CustomButton
           content="התחבר"
-          style={{ marginTop: 20 }}
           onPress={handleSubmit(onSignIn)}
+          style={{ marginTop: 20 }}
         />
         <Pressable onPress={() => router.push("/verifyEmail")}>
           <Text style={styles.link}>שכחתי סיסמא</Text>
         </Pressable>
-      </ScrollView>
+      </>
       <StatusBar style="auto" />
     </KeyboardAvoidingView>
   );

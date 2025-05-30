@@ -9,7 +9,6 @@ import { StatusBar } from "expo-status-bar";
 import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -62,22 +61,18 @@ export default function VerifyEmailScreen() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#228B22" />
       </View>
     );
   } else {
     return (
       <>
-        <Image
-          source={require("@/assets/images/logo-color.png")}
-          style={styles.logo}
-        />
         {/* <Text style={styles.title}>אימות אימייל</Text> */}
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.container}
         >
-          <Text style={styles.content}>נא להזין את כתובת של חשבונך</Text>
+          <Text style={styles.content}>נא להזין את הכתובת של חשבונך</Text>
           <Text>כתובת אימייל</Text>
           <View>
             <CustomInput

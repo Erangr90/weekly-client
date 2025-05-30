@@ -1,4 +1,5 @@
 import { store } from "@/store";
+import toastConfig from "@/utils/toastConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Slot } from "expo-router";
 import * as Updates from "expo-updates";
@@ -7,18 +8,8 @@ import { I18nManager, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
-import LoginTime from "./loginTime";
+import LoginTime from "../components/LoginTime";
 export default function RootLayout() {
-  // useEffect(() => {
-  //   // Force RTL layout direction
-  //   if (!I18nManager.isRTL) {
-  //     I18nManager.allowRTL(true);
-  //     I18nManager.forceRTL(true);
-  //     I18nManager.swapLeftAndRightInRTL(false);
-  //     Updates.reloadAsync();
-  //   }
-  // }, []);
-
   useEffect(() => {
     const enforceRTL = async () => {
       const rtlSet = await AsyncStorage.getItem("rtl-applied");
@@ -44,7 +35,7 @@ export default function RootLayout() {
     <Provider store={store}>
       <SafeAreaView style={styles.container}>
         <LoginTime />
-        <Toast />
+        <Toast config={toastConfig} />
         <Slot />
       </SafeAreaView>
     </Provider>
@@ -55,5 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     direction: "rtl",
     backgroundColor: "white",
+    // justifyContent: "center",
   },
 });
