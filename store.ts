@@ -3,6 +3,7 @@ import allergyReducer from "./features/allergy/allergyReducer";
 import authReducer from "./features/auth/authReducer";
 import counterReducer from "./features/counter/counterSlice";
 import ingredientsReducer from "./features/ingredients/ingredientsReducer";
+import restaurantsReducer from "./features/restaurants/restaurantsReducer";
 import signUpReducer from "./features/signUpForm/signUpFormSlice";
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     signUp: signUpReducer,
     allergies: allergyReducer,
     ingredients: ingredientsReducer,
+    restaurants: restaurantsReducer,
   },
 });
 

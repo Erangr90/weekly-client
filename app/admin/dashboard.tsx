@@ -82,7 +82,7 @@ export default function DashboardScreen() {
 
       <TouchableOpacity
         key={5}
-        onPress={() => console.log("מסעדות")}
+        onPress={() => router.push("/admin/restaurants")}
         style={styles.gridItem}
       >
         <Text style={styles.text}>מסעדות</Text>

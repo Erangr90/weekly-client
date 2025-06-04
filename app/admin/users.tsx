@@ -1,5 +1,5 @@
-import PopupModal from "@/components/PopUpModal";
-import UsersTable from "@/components/UsersTable";
+import PopupModal from "@/components/modals/PopUpModal";
+import UsersTable from "@/components/tables/UsersTable";
 import {
   deleteUser,
   getAllUsers,

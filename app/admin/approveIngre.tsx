@@ -1,4 +1,4 @@
-import ApproveTable from "@/components/EditTable";
+import ApproveTable from "@/components/tables/EditTable";
 import {
   approvePending,
   deletePending,
@@ -23,9 +23,7 @@ export default function AdminPendingScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const [pending, setPending] = useState<Ingredient[] | undefined>(undefined);
   const [page, setPage] = useState<number>(1);
-  const { loading, error } = useSelector(
-    (state: RootState) => state.ingredients,
-  );
+  const { loading } = useSelector((state: RootState) => state.ingredients);
   const router = useRouter();
 
   const fetchPending = async (page: number) => {

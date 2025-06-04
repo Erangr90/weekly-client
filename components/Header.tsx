@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import PopupModal from "./SetModal";
+import PopupModal from "./modals/SetModal";
 
 export default function Header() {
   const { user } = useSelector((state: RootState) => state.auth);

@@ -1,7 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
-import IngredTable from "@/components/IngridTable";
-import PopupModal from "@/components/PopUpModal";
+import PopupModal from "@/components/modals/PopUpModal";
+import IngredTable from "@/components/tables/IngridTable";
 import {
   createIngred,
   deleteIngred,
@@ -37,7 +37,9 @@ export default function AdminIngredScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [addShow, setAddShow] = useState(false);
   const [editAble, setEditAble] = useState(false);
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error } = useSelector(
+    (state: RootState) => state.ingredients,
+  );
   const [ingred, setIngred] = useState<Ingredient | undefined>(undefined);
   const router = useRouter();
 

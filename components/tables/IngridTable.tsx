@@ -1,14 +1,14 @@
 import { Ingredient } from "@/types/ingredient";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 
 interface TableProps {
   data: Ingredient[];
   page: number;
   setPage: (page: number) => void;
   onEdit: (show: boolean) => void;
-  setAllergy: (user: Ingredient) => void;
+  setAllergy: (ingred: Ingredient) => void;
 }
 
 export default function IngredTable(props: TableProps) {

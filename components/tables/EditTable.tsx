@@ -1,7 +1,7 @@
 import { Ingredient } from "@/types/ingredient";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 
 interface TableProps {
   data: Ingredient[];

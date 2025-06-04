@@ -1,7 +1,14 @@
 // PopupModal.tsx
 import React from "react";
-import { Modal, StyleSheet, Text, View } from "react-native";
-import CustomButton from "./CustomButton";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import CustomButton from "../CustomButton";
 
 interface PopupModalProps {
   visible: boolean;
@@ -23,18 +30,20 @@ const PopupModal: React.FC<PopupModalProps> = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.overlay}
+      >
         <View style={styles.popup}>
           <Text style={styles.text}>{title}</Text>
-          <View style={styles.centerContent}>{children}</View>
-
+          <View style={styles.content}>{children}</View>
           <CustomButton
             content="סגירה"
             onPress={onClose}
             style={styles.button}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -50,8 +59,7 @@ const styles = StyleSheet.create({
   },
   popup: {
     width: "90%", // instead of fixed 400
-    maxHeight: "80%", // allow room for keyboard
-    height: "50%",
+    maxHeight: "90%", // allow room for keyboard
     backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
@@ -60,17 +68,23 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    marginBottom: 90,
+    marginBottom: "10%",
     fontWeight: "600",
     alignSelf: "center",
   },
   button: {
     padding: 10,
-    marginTop: 15,
+    marginTop: "10%",
   },
   centerContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center", // center all content inside
+    gap: 20,
+  },
+  content: {
+    flexGrow: 1,
+    justifyContent: "center",
+    gap: 20,
   },
 });

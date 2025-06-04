@@ -1,6 +1,6 @@
-import PopupModal from "@/components/AddIngrModal";
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
+import PopupModal from "@/components/modals/AddIngrModal";
 import { getUserIngr, updateUserIng } from "@/features/auth/authActions";
 import {
   addPendingIngr,

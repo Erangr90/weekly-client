@@ -1,7 +1,7 @@
 import { User } from "@/types/users";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 
 interface TableProps {
   data: User[];
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   cell: {
-    padding: "1%",
+    // padding: "%",
     flex: 1,
     minWidth: 100,
     borderRightWidth: 1,

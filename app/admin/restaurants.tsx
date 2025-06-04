@@ -1,15 +1,15 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import PopupModal from "@/components/modals/PopUpModal";
-import AllergiesTable from "@/components/tables/AllergiesTable";
+import ResTable from "@/components/tables/resTable";
 import {
-  createAllergy,
-  deleteAllergy,
-  getAllergiesPage,
-  updateAllergy,
-} from "@/features/allergy/allergyActions";
+  createRestaurant,
+  deleteRestaurant,
+  getRestaurantsPage,
+  updateRestaurant,
+} from "@/features/restaurants/restaurantsActions";
 import { AppDispatch, RootState } from "@/store";
-import { Allergy } from "@/types/allergy";
+import { Restaurant } from "@/types/restaurant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -29,55 +29,79 @@ import {
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
-export default function AdminUsersScreen() {
+export default function AdminResScreen() {
   const dispatch = useDispatch<AppDispatch>();
-  const [allergies, setAllergies] = useState<Allergy[] | undefined>(undefined);
+  const [restaurants, setRestaurants] = useState<Restaurant[] | undefined>(
+    undefined,
+  );
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [addShow, setAddShow] = useState(false);
+  const [addVisible, setAddVisible] = useState(false);
   const [editAble, setEditAble] = useState(false);
-  const { loading } = useSelector((state: RootState) => state.allergies);
-  const [allergy, setAllergy] = useState<Allergy | undefined>(undefined);
+  const { loading } = useSelector((state: RootState) => state.restaurants);
+  const [restaurant, setRestaurant] = useState<Restaurant | undefined>(
+    undefined,
+  );
   const router = useRouter();
 
-  const editNameSchema = z.object({
+  const editSchema = z.object({
     name: z
-      .string({ message: "שם האלרגיה הוא חובה" })
-      .min(2, "שם האלרגיה חייב להכיל לפחות 2 תווים")
-      .max(50, "שם האלרגיה יכול להכיל עד 50 תווים")
+      .string({ message: "שם המסעדה הוא חובה" })
+      .min(2, "שם המסעדה חייב להכיל לפחות 2 תווים")
+      .max(50, "שם המסעדה יכול להכיל עד 50 תווים")
       .regex(
-        /^[\u0590-\u05FF ]+$/,
+        /^[a-zA-Z\u0590-\u05FF ]+$/,
+        "שם האלרגיה יכול להכיל רק אותיות בעברית ורווחים",
+      )
+      .optional(),
+    email: z
+      .string({ message: "אימייל הוא חובה" })
+      .email("כתובת האימייל אינה תקינה")
+      .optional(),
+    phone: z
+      .string({ message: "טלפון הוא חובה" })
+      .min(9, "מספר הטלפון חייב להכיל לפחות 9 מספרים")
+      .max(10, "מספר הטלפון חייב להכיל עד 10 מספרים")
+      .regex(/^[0-9]{9,10}$/, "מספר הטלפון לא תקין")
+      .optional(),
+  });
+
+  const addSchema = z.object({
+    name: z
+      .string({ message: "שם המסעדה הוא חובה" })
+      .min(2, "שם המסעדה חייב להכיל לפחות 2 תווים")
+      .max(50, "שם המסעדה יכול להכיל עד 50 תווים")
+      .regex(
+        /^[a-zA-Z\u0590-\u05FF ]+$/,
         "שם האלרגיה יכול להכיל רק אותיות בעברית ורווחים",
       ),
-  });
-  const newNameSchema = z.object({
-    name: z
-      .string({ message: "שם האלרגיה הוא חובה" })
-      .min(2, "שם האלרגיה חייב להכיל לפחות 2 תווים")
-      .max(50, "שם האלרגיה יכול להכיל עד 50 תווים")
-      .regex(
-        /^[\u0590-\u05FF ]+$/,
-        "שם האלרגיה יכול להכיל רק אותיות בעברית ורווחים",
-      ),
+    email: z
+      .string({ message: "אימייל הוא חובה" })
+      .email("כתובת האימייל אינה תקינה"),
+    phone: z
+      .string({ message: "טלפון הוא חובה" })
+      .min(9, "מספר הטלפון חייב להכיל לפחות 9 מספרים")
+      .max(10, "מספר הטלפון חייב להכיל עד 10 מספרים")
+      .regex(/^[0-9]{9,10}$/, "מספר הטלפון לא תקין"),
   });
 
-  const editForm = useForm({ resolver: zodResolver(editNameSchema) });
-  const addForm = useForm({ resolver: zodResolver(newNameSchema) });
+  const editForm = useForm({ resolver: zodResolver(editSchema) });
+  const addForm = useForm({ resolver: zodResolver(addSchema) });
 
-  type AllergyEditName = z.infer<typeof editNameSchema>;
-  type AllergyNewName = z.infer<typeof newNameSchema>;
+  type resEdit = z.infer<typeof editSchema>;
+  type resAdd = z.infer<typeof addSchema>;
 
-  const fetchAllergies = async (page: number, search?: string) => {
+  const fetchRestaurants = async (page: number, search?: string) => {
     try {
-      const res = await dispatch(getAllergiesPage({ page, search })).unwrap();
-      setAllergies(res);
+      const res = await dispatch(getRestaurantsPage({ page, search })).unwrap();
+      setRestaurants(res);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const changeAllergyName = async (data: AllergyEditName) => {
+  const editRes = async (data: resEdit) => {
     Alert.alert(
       "האם את/ה בטוח/ה ?", // Title
       "", // Optional message
@@ -92,14 +116,19 @@ export default function AdminUsersScreen() {
           onPress: async () => {
             try {
               const { message } = await dispatch(
-                updateAllergy({ id: allergy!.id, name: data.name }),
+                updateRestaurant({
+                  id: restaurant!.id,
+                  name: data.name?.trim() || restaurant!.name,
+                  email: data.email?.trim() || restaurant!.email,
+                  phone: data.phone?.trim() || restaurant!.phone,
+                }),
               ).unwrap();
               Toast.show({
                 type: "success",
                 text1: message,
                 position: "bottom",
               });
-              router.push("/admin/allergies");
+              router.push("/admin/restaurants");
             } catch (error: any) {
               console.error(error);
               Toast.show({
@@ -119,7 +148,7 @@ export default function AdminUsersScreen() {
     );
   };
 
-  const addNewAllergy = async (data: AllergyNewName) => {
+  const delRes = async () => {
     Alert.alert(
       "האם את/ה בטוח/ה ?", // Title
       "", // Optional message
@@ -134,14 +163,14 @@ export default function AdminUsersScreen() {
           onPress: async () => {
             try {
               const { message } = await dispatch(
-                createAllergy(data.name),
+                deleteRestaurant(restaurant!.id),
               ).unwrap();
               Toast.show({
                 type: "success",
                 text1: message,
                 position: "bottom",
               });
-              router.push("/admin/allergies");
+              router.push("/admin/restaurants");
             } catch (error: any) {
               console.error(error);
               Toast.show({
@@ -149,7 +178,7 @@ export default function AdminUsersScreen() {
                 text1: error.message,
                 position: "bottom",
               });
-              addForm.setError("name", {
+              editForm.setError("name", {
                 type: "manual",
                 message: error.message,
               });
@@ -161,49 +190,61 @@ export default function AdminUsersScreen() {
     );
   };
 
-  const delAllergy = async () => {
-    try {
-      Alert.alert(
-        "האם את/ה בטוח/ה ?", // Title
-        "", // Optional message
-        [
-          {
-            text: "ביטול", // Cancel
-            onPress: () => console.log("User pressed Cancel"),
-            style: "cancel",
-          },
-          {
-            text: "אישור", // OK
-            onPress: async () => {
+  const addRes = async (data: resAdd) => {
+    Alert.alert(
+      "האם את/ה בטוח/ה ?", // Title
+      "", // Optional message
+      [
+        {
+          text: "ביטול", // Cancel
+          onPress: () => console.log("User pressed Cancel"),
+          style: "cancel",
+        },
+        {
+          text: "אישור", // OK
+          onPress: async () => {
+            try {
               const { message } = await dispatch(
-                deleteAllergy(allergy!.id),
+                createRestaurant({
+                  name: data.name?.trim(),
+                  email: data.email?.trim(),
+                  phone: data.phone?.trim(),
+                }),
               ).unwrap();
               Toast.show({
                 type: "success",
                 text1: message,
                 position: "bottom",
               });
-              router.push("/admin/allergies");
-            },
+              router.push("/admin/restaurants");
+            } catch (error: any) {
+              console.error(error);
+              Toast.show({
+                type: "error",
+                text1: error.message,
+                position: "bottom",
+              });
+              editForm.setError("name", {
+                type: "manual",
+                message: error.message,
+              });
+            }
           },
-        ],
-        { cancelable: false }, // Optional: prevent closing the alert by tapping outside
-      );
-    } catch (error: any) {
-      console.error(error);
-      Toast.show({ type: "error", text1: error.message, position: "bottom" });
-    }
+        },
+      ],
+      { cancelable: false }, // Optional: prevent closing the alert by tapping outside
+    );
   };
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      fetchAllergies(page, search.trim() !== "" ? search : undefined);
+      fetchRestaurants(page, search.trim() !== "" ? search : undefined);
     }, 1000); // Debounce time in ms
 
     return () => clearTimeout(delayDebounce);
   }, [search, page]);
 
-  if (loading || allergies === undefined) {
+  if (loading || restaurants === undefined) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#228B22" />
@@ -212,7 +253,7 @@ export default function AdminUsersScreen() {
   } else {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>אלרגיות</Text>
+        <Text style={styles.title}>מסעדות</Text>
         <View style={styles.row}>
           <TextInput
             value={search}
@@ -221,19 +262,14 @@ export default function AdminUsersScreen() {
             onChangeText={(text) => setSearch(text.trim())}
             placeholderTextColor="gray"
           />
-          <CustomButton
-            content="הוספה"
-            onPress={() => {
-              setAddShow(true);
-            }}
-          />
+          <CustomButton content="הוספה" onPress={() => setAddVisible(true)} />
         </View>
-        <AllergiesTable
-          data={allergies || []}
+        <ResTable
+          data={restaurants || []}
           page={page}
           setPage={setPage}
           onEdit={setModalVisible}
-          setAllergy={setAllergy}
+          setRes={setRestaurant}
         />
         <PopupModal
           visible={modalVisible}
@@ -241,7 +277,7 @@ export default function AdminUsersScreen() {
             setModalVisible(false);
             setEditAble(false);
           }}
-          title="עריכת אלרגיה"
+          title="עריכת מסעדה"
         >
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -251,10 +287,29 @@ export default function AdminUsersScreen() {
               <CustomInput
                 control={editForm.control}
                 name="name"
-                placeholder={allergy?.name}
+                placeholder={restaurant?.name}
                 placeholderTextColor="black"
                 editable={editAble}
-                style={{ borderRadius: 20, marginTop: 10 }}
+                style={{ borderRadius: 20, marginTop: "2%" }}
+              />
+              <Text>אימייל:</Text>
+              <CustomInput
+                control={editForm.control}
+                name="email"
+                placeholder={restaurant?.email}
+                placeholderTextColor="black"
+                editable={editAble}
+                style={{ borderRadius: 20, marginTop: "2%" }}
+              />
+              <Text>טלפון:</Text>
+              <CustomInput
+                control={editForm.control}
+                name="phone"
+                placeholder={restaurant?.phone}
+                placeholderTextColor="black"
+                editable={editAble}
+                style={{ borderRadius: 20, marginTop: "2%" }}
+                keyboardType="numeric"
               />
             </View>
             <View
@@ -278,39 +333,61 @@ export default function AdminUsersScreen() {
                   style={styles.textContainer}
                   onPress={() => setEditAble(!editAble)}
                 >
-                  <Text>עריכת שם</Text>
+                  <Text>עריכת פרטים</Text>
                   <Text>✍️</Text>
                 </Pressable>
               )}
-              <Pressable style={styles.textContainer} onPress={delAllergy}>
-                <Text>מחיקת אלרגיה</Text>
+              <Pressable style={styles.textContainer} onPress={delRes}>
+                <Text>מחיקת מסעדה</Text>
                 <Text>❌</Text>
               </Pressable>
             </View>
             {editAble && (
               <CustomButton
                 content="שמירה"
-                onPress={editForm.handleSubmit(changeAllergyName)}
+                onPress={editForm.handleSubmit(editRes)}
                 style={styles.addButton}
               />
             )}
           </KeyboardAvoidingView>
         </PopupModal>
         <PopupModal
-          visible={addShow}
-          onClose={() => setAddShow(false)}
-          title="הוספת אלרגיה חדשה"
+          visible={addVisible}
+          onClose={() => {
+            setAddVisible(false);
+          }}
+          title="הוספת מסעדה"
         >
-          <CustomInput
-            control={addForm.control}
-            name="name"
-            style={styles.addInput}
-            placeholder="אלרגיה חדשה"
-            placeholderTextColor="gray"
-          />
+          <View>
+            <Text>שם:</Text>
+            <CustomInput
+              control={addForm.control}
+              name="name"
+              placeholder="שם המסעדה"
+              placeholderTextColor="black"
+              style={{ borderRadius: 20, marginTop: "2%" }}
+            />
+            <Text>אימייל:</Text>
+            <CustomInput
+              control={addForm.control}
+              name="email"
+              placeholder="אימייל"
+              placeholderTextColor="black"
+              style={{ borderRadius: 20, marginTop: "2%" }}
+            />
+            <Text>טלפון:</Text>
+            <CustomInput
+              control={addForm.control}
+              name="phone"
+              placeholder="טלפון"
+              placeholderTextColor="black"
+              style={{ borderRadius: 20, marginTop: "2%" }}
+              keyboardType="numeric"
+            />
+          </View>
           <CustomButton
-            content="הוספה"
-            onPress={addForm.handleSubmit(addNewAllergy)}
+            content="הוספת מסעדה"
+            onPress={addForm.handleSubmit(addRes)}
             style={styles.addButton}
           />
         </PopupModal>

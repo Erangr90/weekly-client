@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 
 interface PopupModalProps {
   visible: boolean;

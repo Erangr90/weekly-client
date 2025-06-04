@@ -1,14 +1,14 @@
 import { Allergy } from "@/types/allergy";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 
 interface TableProps {
   data: Allergy[];
   page: number;
   setPage: (page: number) => void;
   onEdit: (show: boolean) => void;
-  setAllergy: (user: Allergy) => void;
+  setAllergy: (allergy: Allergy) => void;
 }
 
 export default function AllergiesTable(props: TableProps) {
