@@ -30,7 +30,6 @@ export default function RootLayout() {
 
     enforceRTL();
   }, []);
-
   return (
     <Provider store={store}>
       <SafeAreaView style={styles.container}>
@@ -46,6 +45,6 @@ const styles = StyleSheet.create({
     flex: 1,
     direction: "rtl",
     backgroundColor: "white",
-    // justifyContent: "center",
+    justifyContent: "center",
   },
 });

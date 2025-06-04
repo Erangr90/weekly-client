@@ -38,13 +38,13 @@ export default function VerifyScreen() {
   const { code } = useSelector((state: RootState) => state.signUp);
 
   const onVerify = async (data: verifyForm) => {
-    if (data.code !== code) {
+    if (data.code.trim() !== code) {
       setError("root", {
         message: "קוד האימות שגוי",
       });
       return;
     } else {
-      router.push("/allergies");
+      router.push("/userAllergies");
     }
   };
 
@@ -85,9 +85,11 @@ export default function VerifyScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    flex: 1,
+    justifyContent: "flex-start",
     padding: 20,
-    gap: 10,
+    direction: "rtl",
+    gap: 3,
   },
   title: {
     fontSize: 24,

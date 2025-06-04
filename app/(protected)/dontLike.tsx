@@ -1,14 +1,17 @@
 import PopupModal from "@/components/AddIngrModal";
 import CustomButton from "@/components/CustomButton";
-import { updateUserIng } from "@/features/auth/authActions";
+import CustomInput from "@/components/CustomInput";
+import { getUserIngr, updateUserIng } from "@/features/auth/authActions";
 import {
   addPendingIngr,
   getAllIngredient,
 } from "@/features/ingredients/ingredientsActions";
 import { AppDispatch, RootState } from "@/store";
 import { Ingredient } from "@/types/ingredient";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -22,6 +25,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
+import { z } from "zod";
 
 export default function DontLikeScreen() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -30,11 +34,34 @@ export default function DontLikeScreen() {
   const [userIngredients, setUserIngredients] = useState<number[]>([]);
   const [filter, setFilter] = useState<string | undefined>(undefined);
   const [modalVisible, setModalVisible] = useState(false);
-  const [newIngr, setNewIngr] = useState<string | undefined>(undefined);
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector(
     (state: RootState) => state.ingredients,
   );
+
+  const ingrNameSchema = z.object({
+    name: z
+      .string({ message: "שם המרכיב הוא חובה" })
+      .min(2, "שם המרכיב חייב להכיל לפחות 2 תווים")
+      .max(50, "שם המרכיב יכול להכיל עד 50 תווים")
+      .regex(
+        /^[\u0590-\u05FF ]+$/,
+        "שם המרכיב יכול להכיל רק אותיות בעברית ורווחים",
+      ),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    reset,
+  } = useForm({
+    resolver: zodResolver(ingrNameSchema),
+  });
+
+  type IngrName = z.infer<typeof ingrNameSchema>;
+
   const router = useRouter();
 
   const toggleIngredients = (ingredient: Ingredient) => {
@@ -78,17 +105,31 @@ export default function DontLikeScreen() {
       console.error(error);
     }
   };
-  const onAdd = async () => {
+  const onAdd = async (data: IngrName) => {
     try {
-      if (!newIngr || newIngr === "") return;
       const { message } = await dispatch(
-        addPendingIngr({ name: newIngr }),
+        addPendingIngr({ name: data.name.trim() }),
       ).unwrap();
       Toast.show({ type: "success", text1: message, position: "bottom" });
       setModalVisible(false);
-    } catch (error) {
+      reset({ name: "" });
+    } catch (error: any) {
+      setError("root", {
+        type: "manual",
+        message: error.message,
+      });
       console.error(error);
+      Toast.show({
+        type: "error",
+        text1: error.message as string,
+        position: "bottom",
+      });
     }
+  };
+
+  const fetchUserIngr = async () => {
+    const res = await dispatch(getUserIngr(user!.id!)).unwrap();
+    setUserIngredients(res.ingredientIds);
   };
 
   useEffect(() => {
@@ -100,16 +141,9 @@ export default function DontLikeScreen() {
 
   useEffect(() => {
     fetchIngredients();
-    setUserIngredients(user!.ingredientIds!);
+    fetchUserIngr();
   }, []);
 
-  if (error) {
-    Toast.show({
-      type: "error",
-      text1: error.message as string,
-      position: "bottom",
-    });
-  }
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -128,9 +162,7 @@ export default function DontLikeScreen() {
               value={filter}
               placeholder="חיפוש ..."
               style={styles.search}
-              onChange={(e) => {
-                setFilter(e.nativeEvent.text);
-              }}
+              onChangeText={(text) => setFilter(text.trim())}
               placeholderTextColor="gray"
             />
             <CustomButton
@@ -144,16 +176,14 @@ export default function DontLikeScreen() {
           onClose={() => setModalVisible(false)}
           title="הוספת מרכיב חדש"
         >
-          <TextInput
-            value={newIngr}
+          <CustomInput
+            control={control}
+            name="name"
             style={styles.addInput}
             placeholder="מרכיב חדש"
-            onChange={(e) => {
-              setNewIngr(e.nativeEvent.text);
-            }}
             placeholderTextColor="gray"
           />
-          {error && (
+          {errors.root && (
             <Text
               style={{
                 color: "crimson",
@@ -161,12 +191,12 @@ export default function DontLikeScreen() {
               }}
             >
               {"\u2022 "}
-              {error?.message}
+              {errors.root.message}
             </Text>
           )}
           <CustomButton
             content="הוספה"
-            onPress={onAdd}
+            onPress={handleSubmit(onAdd)}
             style={styles.addButton}
           />
         </PopupModal>
@@ -210,7 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     textAlign: "center",
-    marginTop: "20%",
+    marginTop: "2%",
     marginBottom: "5%",
   },
   grid: {
@@ -223,7 +253,6 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     alignItems: "center",
-    backgroundColor: "#fff",
   },
   selectedItem: {
     backgroundColor: "#b2fab4",
@@ -239,9 +268,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 20,
-    borderTopWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   search: {
     flex: 1,
@@ -259,7 +285,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginTop: 20,
+    marginTop: 10,
     gap: 20,
   },
   searchButton: {

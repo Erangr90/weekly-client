@@ -6,3 +6,7 @@ export type User = {
   role: string;
   ingredientIds: number[];
 };
+
+export type UserIngr = {
+  ingredientIds: number[];
+};

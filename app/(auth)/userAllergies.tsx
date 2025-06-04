@@ -34,14 +34,13 @@ export default function AllergiesScreen() {
   };
   const dispatch = useDispatch<AppDispatch>();
   const { loading } = useSelector((state: RootState) => state.auth);
-  const { fullName, email, password } = useSelector(
+  let { fullName, email, password } = useSelector(
     (state: RootState) => state.signUp,
   );
   const [error, setError] = useState<string | undefined>(undefined);
   const router = useRouter();
 
   const onEndSignUp = async () => {
-    // console.log(userAllergies);
     try {
       if (!email || !fullName || !password) {
         setError("משהו השתבש");
@@ -49,9 +48,9 @@ export default function AllergiesScreen() {
       }
       await dispatch(
         register({
-          fullName,
-          email,
-          password,
+          fullName: fullName.trim(),
+          email: email.trim(),
+          password: password.trim(),
           allergyIds: userAllergies,
         }),
       ).unwrap();
@@ -126,7 +125,7 @@ export default function AllergiesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
   },
   title: {

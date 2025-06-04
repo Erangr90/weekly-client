@@ -1,6 +1,6 @@
 import { ServerError } from "@/types/errors";
 import { LoginForm, RegisterForm } from "@/types/forms";
-import { User } from "@/types/users";
+import { User, UserIngr } from "@/types/users";
 import axiosClient from "@/utils/axiosClient";
 import {
   deleteExTime,
@@ -153,5 +153,91 @@ export const updateUserAllergy = createAsyncThunk<
       return rejectWithValue(error.response.data);
     }
     return rejectWithValue({ message: "Error in updateUserAllergy action" });
+  }
+});
+
+export const getAllUsers = createAsyncThunk<
+  User[],
+  { page: number; search?: string },
+  { rejectValue: ServerError }
+>(
+  "auth/getAllUsers",
+  async (
+    { page, search }: { page: number; search?: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      if (search && search !== "") {
+        const { data } = await axiosClient.get(`/users`, {
+          params: { page, search },
+        });
+        return data;
+      } else {
+        const { data } = await axiosClient.get(`/users`, {
+          params: { page },
+        });
+        return data;
+      }
+    } catch (err) {
+      const error = err as AxiosError<ServerError>;
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({ message: "Error in getAllUsers action" });
+    }
+  },
+);
+
+export const updateUserRole = createAsyncThunk<
+  { message: string },
+  { id: number; role: string },
+  { rejectValue: ServerError }
+>(
+  "auth/updateUserRole",
+  async ({ id, role }: { id: number; role: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosClient.put(`/users/${id}/role`, { role });
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<ServerError>;
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({ message: "Error in updateUserRole action" });
+    }
+  },
+);
+
+export const deleteUser = createAsyncThunk<
+  { message: string },
+  number,
+  { rejectValue: ServerError }
+>("auth/deleteUser", async (id: number, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.delete(`/users/${id}`);
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({ message: "Error in deleteUser action" });
+  }
+});
+
+export const getUserIngr = createAsyncThunk<
+  UserIngr,
+  number,
+  { rejectValue: ServerError }
+>("users/getUserById", async (id: number, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.get(`/users/${id}/ingr`);
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({ message: "Error in getUserById action" });
   }
 });

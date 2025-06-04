@@ -38,7 +38,7 @@ export default function DashboardScreen() {
     <View style={styles.grid}>
       <TouchableOpacity
         key={1}
-        onPress={() => router.push("/approveIngre")}
+        onPress={() => router.push("/admin/approveIngre")}
         style={styles.gridItem}
       >
         <Text style={styles.text}>
@@ -46,6 +46,30 @@ export default function DashboardScreen() {
           {`\n`}
           {`(${pendingLen})`}
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        key={3}
+        onPress={() => router.push("/admin/users")}
+        style={styles.gridItem}
+      >
+        <Text style={styles.text}>משתמשים</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        key={4}
+        onPress={() => router.push("/admin/allergies")}
+        style={styles.gridItem}
+      >
+        <Text style={styles.text}>אלרגיות</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        key={6}
+        onPress={() => router.push("/admin/ingred")}
+        style={styles.gridItem}
+      >
+        <Text style={styles.text}>מרכיבים</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -57,11 +81,11 @@ export default function DashboardScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        key={3}
-        onPress={() => console.log("משתמשים")}
+        key={5}
+        onPress={() => console.log("מסעדות")}
         style={styles.gridItem}
       >
-        <Text style={styles.text}>משתמשים</Text>
+        <Text style={styles.text}>מסעדות</Text>
       </TouchableOpacity>
     </View>
   );
@@ -129,6 +153,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     alignSelf: "center",
-    marginBottom: 80,
   },
 });

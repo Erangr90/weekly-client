@@ -53,7 +53,7 @@ export default function ResetPasswordScreen() {
   const { email } = useSelector((state: RootState) => state.signUp);
 
   const onResetPassword = async (data: resetPasswordForm) => {
-    if (data.password !== data.passwordValid) {
+    if (data.password.trim() !== data.passwordValid.trim()) {
       setError("root", {
         type: "manual",
         message: "הסיסמאות אינן תואמות",
@@ -63,7 +63,7 @@ export default function ResetPasswordScreen() {
     try {
       if (!email) return;
       const { message } = await dispatch(
-        resetPassword({ email, password: data.password }),
+        resetPassword({ email: email.trim(), password: data.password.trim() }),
       ).unwrap();
       dispatch(setEmail(""));
       dispatch(setCode(""));
@@ -135,7 +135,7 @@ export default function ResetPasswordScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
     gap: 20,
     marginTop: 30,

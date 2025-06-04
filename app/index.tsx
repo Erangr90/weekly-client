@@ -1,37 +1,49 @@
 import CustomButton from "@/components/CustomButton";
+import { RootState } from "@/store";
 import { Link, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 export default function WelcomeScreen() {
+  const { user, isLogin } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
+  useEffect(() => {
+    if (user !== undefined && isLogin) {
+      router.push("/home");
+    }
+  }, [user, isLogin]);
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <>
       <Image
         source={require("@/assets/images/logo-color.png")}
         style={styles.logo}
       />
-      <Text style={styles.title}>ברוכים הבאים</Text>
-      <View style={styles.container}>
-        <CustomButton
-          content="התחברות"
-          onPress={() => router.push("/signIn")}
-        />
-        <CustomButton
-          style={{ backgroundColor: "red" }}
-          content="התחבר באמצעות Google"
-          onPress={() => {}}
-        />
-        <CustomButton
-          style={{ backgroundColor: "#696969" }}
-          content="התחבר באמצעות Apple"
-          onPress={() => {}}
-        />
-        <Link href={"/signUp"} style={styles.link}>
-          צור חשבון חדש
-        </Link>
-      </View>
-    </ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Text style={styles.title}>ברוכים הבאים</Text>
+        <View style={styles.container}>
+          <CustomButton
+            content="התחברות"
+            onPress={() => router.push("/signIn")}
+          />
+          <CustomButton
+            style={{ backgroundColor: "red" }}
+            content="התחבר באמצעות Google"
+            onPress={() => {}}
+          />
+          <CustomButton
+            style={{ backgroundColor: "#696969" }}
+            content="התחבר באמצעות Apple"
+            onPress={() => {}}
+          />
+          <Link href={"/signUp"} style={styles.link}>
+            צור חשבון חדש
+          </Link>
+        </View>
+      </ScrollView>
+    </>
   );
 }
 
@@ -46,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     alignSelf: "center",
-    marginBottom: 80,
+    marginVertical: "10%",
   },
   link: {
     color: "#228B22",
@@ -55,12 +67,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   logo: {
-    width: "70%",
     alignSelf: "center",
-    height: 100,
-    maxWidth: 300,
-    maxHeight: 200,
-    marginTop: 80,
-    marginBottom: 40,
+    height: "60%",
+    maxWidth: "80%",
+    maxHeight: "20%",
+    marginTop: "10%",
   },
 });

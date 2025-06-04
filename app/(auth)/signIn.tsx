@@ -54,7 +54,9 @@ export default function SignInScreen() {
 
   const onSignIn = async (data: SignInForm) => {
     try {
-      await dispatch(login(data)).unwrap();
+      await dispatch(
+        login({ email: data.email.trim(), password: data.password.trim() }),
+      ).unwrap();
       router.push("/home");
     } catch (error: any) {
       if (typeof error?.message === "string") {
@@ -137,9 +139,17 @@ export default function SignInScreen() {
           onPress={handleSubmit(onSignIn)}
           style={{ marginTop: 20 }}
         />
+
         <Pressable onPress={() => router.push("/verifyEmail")}>
           <Text style={styles.link}>שכחתי סיסמא</Text>
         </Pressable>
+
+        <View style={styles.row}>
+          <Text>אין לך חשבון?</Text>
+          <Pressable onPress={() => router.push("/signUp")}>
+            <Text style={styles.link2}>הירשם עכשיו</Text>
+          </Pressable>
+        </View>
       </>
       <StatusBar style="auto" />
     </KeyboardAvoidingView>
@@ -149,9 +159,9 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
-    marginTop: 30,
+    gap: 20,
   },
   title: {
     fontSize: 24,
@@ -176,5 +186,21 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontSize: 16,
     marginTop: 30,
+  },
+  row: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+    gap: 5,
+  },
+  link2: {
+    color: "#228B22",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  text: {
+    fontWeight: "600",
+    fontSize: 16,
   },
 });

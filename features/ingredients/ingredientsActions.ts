@@ -57,11 +57,13 @@ export const getAllPendingLen = createAsyncThunk<
 
 export const getAllPending = createAsyncThunk<
   Ingredient[],
-  void,
+  number,
   { rejectValue: ServerError }
->("ingredient/getAllPending", async (_: void, { rejectWithValue }) => {
+>("ingredient/getAllPending", async (page: number, { rejectWithValue }) => {
   try {
-    const { data } = await axiosClient.get("/pending");
+    const { data } = await axiosClient.get("/pending", {
+      params: { page },
+    });
     return data;
   } catch (err) {
     const error = err as AxiosError<ServerError>;
@@ -105,3 +107,89 @@ export const deletePending = createAsyncThunk<
     return rejectWithValue({ message: "Error in deletePending action" });
   }
 });
+
+export const createIngred = createAsyncThunk<
+  { message: string },
+  string,
+  { rejectValue: ServerError }
+>("ingredient/createIngred", async (name: string, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.post(`/ingredients`, { name });
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({ message: "Error in createIngred action" });
+  }
+});
+
+export const deleteIngred = createAsyncThunk<
+  { message: string },
+  number,
+  { rejectValue: ServerError }
+>("ingredient/deleteIngred", async (id: number, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.delete(`/ingredients/${id}`);
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({ message: "Error in deleteIngred action" });
+  }
+});
+
+export const getAllIngredPage = createAsyncThunk<
+  Ingredient[],
+  { page: number; search?: string },
+  { rejectValue: ServerError }
+>(
+  "ingredient/getAllIngredPage",
+  async (
+    { page, search }: { page: number; search?: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      if (search && search !== "") {
+        const { data } = await axiosClient.get(`/ingredients/page`, {
+          params: { page, search },
+        });
+        return data;
+      } else {
+        const { data } = await axiosClient.get(`/ingredients/page`, {
+          params: { page },
+        });
+        return data;
+      }
+    } catch (err) {
+      const error = err as AxiosError<ServerError>;
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({ message: "Error in getAllIngredPage action" });
+    }
+  },
+);
+
+export const updateIngred = createAsyncThunk<
+  { message: string },
+  { id: number; name: string },
+  { rejectValue: ServerError }
+>(
+  "ingredient/updateIngred",
+  async ({ id, name }: { id: number; name: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosClient.put(`/ingredients/${id}`, { name });
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<ServerError>;
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({ message: "Error in updateIngred action" });
+    }
+  },
+);

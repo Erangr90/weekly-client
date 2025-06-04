@@ -6,7 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import PopupModal from "./SetModal";
 
-export default function AdminHeader() {
+export default function Header() {
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const [modalVisible, setModalVisible] = useState(false);
@@ -51,7 +51,7 @@ export default function AdminHeader() {
           <TouchableOpacity
             key={2}
             style={[styles.navItem, { alignSelf: "flex-start" }]}
-            onPress={() => router.push("/dashboard")}
+            onPress={() => router.push("/admin/dashboard")}
           >
             <Text style={styles.navText}>פאנל ניהול</Text>
           </TouchableOpacity>

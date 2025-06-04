@@ -2,12 +2,16 @@ import { ServerError } from "@/types/errors";
 import { User } from "@/types/users";
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  deleteUser,
+  getAllUsers,
+  getUserIngr,
   login,
   logout,
   register,
   resetPassword,
   updateUserAllergy,
   updateUserIng,
+  updateUserRole,
   verifyCode,
   verifyEmail,
 } from "./authActions";
@@ -170,6 +174,58 @@ export const authSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(updateUserAllergy.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Get All users ---
+    builder.addCase(getAllUsers.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(getAllUsers.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(getAllUsers.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Update user's role ---
+    builder.addCase(updateUserRole.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(updateUserRole.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(updateUserRole.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Delete User ---
+    builder.addCase(deleteUser.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(deleteUser.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(deleteUser.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Get user ingr ---
+    builder.addCase(getUserIngr.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(getUserIngr.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(getUserIngr.pending, (state) => {
       state.loading = true;
       state.error = undefined;
     });

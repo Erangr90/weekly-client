@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -73,22 +74,24 @@ export default function UpdateAllergiesScreen() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>הרגישוית שלי</Text>
-        <View style={styles.grid}>
-          {allergies &&
-            allergies.map((allergy, index) => {
-              const isSelected = userAllergies.includes(allergy.id);
-              return (
-                <Pressable
-                  key={index}
-                  onPress={() => toggleAllergy(allergy)}
-                  style={[styles.gridItem, isSelected && styles.selectedItem]}
-                >
-                  <Text>{allergy.name}</Text>
-                </Pressable>
-              );
-            })}
-        </View>
-        <CustomButton content="סיום" onPress={onSubmit} />
+        <ScrollView showsHorizontalScrollIndicator={false}>
+          <View style={styles.grid}>
+            {allergies &&
+              allergies.map((allergy, index) => {
+                const isSelected = userAllergies.includes(allergy.id);
+                return (
+                  <Pressable
+                    key={index}
+                    onPress={() => toggleAllergy(allergy)}
+                    style={[styles.gridItem, isSelected && styles.selectedItem]}
+                  >
+                    <Text>{allergy.name}</Text>
+                  </Pressable>
+                );
+              })}
+          </View>
+        </ScrollView>
+        <CustomButton content="שמירה" onPress={onSubmit} />
       </View>
     );
   }
@@ -96,9 +99,9 @@ export default function UpdateAllergiesScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
     padding: 20,
+    flex: 1,
+    justifyContent: "flex-start",
   },
   title: {
     fontSize: 24,
@@ -107,6 +110,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   grid: {
+    flex: 1,
+    marginRight: 20,
     flexDirection: "row",
     flexWrap: "wrap",
     width: 300,
@@ -124,13 +129,5 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: "#b2fab4", // light green
-  },
-  logo: {
-    width: "70%",
-    alignSelf: "center",
-    height: 100,
-    maxWidth: 300,
-    maxHeight: 200,
-    marginTop: 40,
   },
 });

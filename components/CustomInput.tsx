@@ -29,6 +29,7 @@ export default function CustomInput<T extends FieldValues>(
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
+            placeholderTextColor="gray"
             style={[
               styles.input,
               props.style,
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 20,
     borderColor: "#ccc",
     textAlign: "right",
     writingDirection: "rtl",

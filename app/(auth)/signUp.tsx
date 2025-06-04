@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -79,10 +80,10 @@ export default function SignUpScreen() {
       return;
     }
     try {
-      const { code } = await dispatch(verifyCode(data.email)).unwrap();
-      dispatch(setFullName(data.fullName));
-      dispatch(setEmail(data.email));
-      dispatch(setPassword(data.password));
+      const { code } = await dispatch(verifyCode(data.email.trim())).unwrap();
+      dispatch(setFullName(data.fullName.trim()));
+      dispatch(setEmail(data.email.trim()));
+      dispatch(setPassword(data.password.trim()));
       dispatch(setCode(code));
       router.push("/verifyCode");
     } catch (error: any) {
@@ -108,90 +109,96 @@ export default function SignUpScreen() {
     </View>
   ) : (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <Text style={styles.title}>יצירת חשבון</Text>
-        <View style={styles.form}>
-          <Text>שם מלא</Text>
-          <CustomInput
-            control={control}
-            name="fullName"
-            placeholder="שם מלא"
-            autoFocus
-          />
-          <Text>כתובת אימייל</Text>
-          <CustomInput
-            control={control}
-            name="email"
-            placeholder="כתובת אימייל"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            autoComplete="email"
-          />
-          <Text>סיסמא</Text>
-          <CustomInput
-            control={control}
-            name="password"
-            placeholder="סיסמא"
-            secureTextEntry={true}
-            autoCapitalize="none"
-            placeholderTextColor="gray"
-          />
-          <Text>אימות סיסמא</Text>
-          <CustomInput
-            control={control}
-            name="passwordValid"
-            placeholder="אימות סיסמא"
-            secureTextEntry={true}
-            autoCapitalize="none"
-            placeholderTextColor="gray"
-          />
-          {errors.root && (
-            <Text
-              style={{
-                color: "crimson",
-                marginBottom: 10,
-              }}
-            >
-              {"\u2022 "}
-              {errors.root.message}
-            </Text>
-          )}
-          {/* In case there is array of errors messages from the server */}
-          {serverErrors &&
-            serverErrors.length > 0 &&
-            serverErrors.map((error, index) => (
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <Text style={styles.title}>יצירת חשבון</Text>
+          <View style={styles.form}>
+            <Text>שם מלא</Text>
+            <CustomInput
+              control={control}
+              name="fullName"
+              placeholder="שם מלא"
+              autoFocus
+            />
+            <Text>כתובת אימייל</Text>
+            <CustomInput
+              control={control}
+              name="email"
+              placeholder="כתובת אימייל"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+            />
+            <Text>סיסמא</Text>
+            <CustomInput
+              control={control}
+              name="password"
+              placeholder="סיסמא"
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor="gray"
+            />
+            <Text>אימות סיסמא</Text>
+            <CustomInput
+              control={control}
+              name="passwordValid"
+              placeholder="אימות סיסמא"
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor="gray"
+            />
+            {errors.root && (
               <Text
-                key={index}
                 style={{
                   color: "crimson",
                   marginBottom: 10,
                 }}
               >
                 {"\u2022 "}
-                {error}
+                {errors.root.message}
               </Text>
-            ))}
-        </View>
-        <CustomButton
-          content="המשך"
-          style={{ marginTop: 20 }}
-          onPress={handleSubmit(onSignUp)}
-        />
-        <StatusBar style="auto" />
-      </KeyboardAvoidingView>
+            )}
+            {/* In case there is array of errors messages from the server */}
+            {serverErrors &&
+              serverErrors.length > 0 &&
+              serverErrors.map((error, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    color: "crimson",
+                    marginBottom: 10,
+                  }}
+                >
+                  {"\u2022 "}
+                  {error}
+                </Text>
+              ))}
+          </View>
+          <CustomButton
+            content="המשך"
+            style={{ marginTop: 20 }}
+            onPress={handleSubmit(onSignUp)}
+          />
+          <StatusBar style="auto" />
+          <View style={styles.row}>
+            <Text>יש לך כבר חשבון?</Text>
+            <Pressable onPress={() => router.push("/signIn")}>
+              <Text style={styles.link2}>התחבר</Text>
+            </Pressable>
+          </View>
+        </KeyboardAvoidingView>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
     gap: 20,
-    marginTop: 30,
   },
   title: {
     fontSize: 24,
@@ -209,5 +216,21 @@ const styles = StyleSheet.create({
     height: 100,
     maxWidth: 300,
     maxHeight: 200,
+  },
+  row: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+    gap: 5,
+  },
+  link2: {
+    color: "#F2003C",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  text: {
+    fontWeight: "600",
+    fontSize: 16,
   },
 });

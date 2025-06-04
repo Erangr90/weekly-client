@@ -3,10 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   addPendingIngr,
   approvePending,
+  createIngred,
+  deleteIngred,
   deletePending,
   getAllIngredient,
+  getAllIngredPage,
   getAllPending,
   getAllPendingLen,
+  updateIngred,
 } from "./ingredientsActions";
 
 export interface ingredientState {
@@ -99,6 +103,58 @@ export const ingredientsSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(deletePending.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Create Ingred ---
+    builder.addCase(createIngred.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(createIngred.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(createIngred.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Delete Ingred ---
+    builder.addCase(deleteIngred.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(deleteIngred.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(deleteIngred.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- Get all ingred by page and search ---
+    builder.addCase(getAllIngredPage.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(getAllIngredPage.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(getAllIngredPage.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
+    // --- update Ingred ---
+    builder.addCase(updateIngred.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(updateIngred.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(updateIngred.pending, (state) => {
       state.loading = true;
       state.error = undefined;
     });

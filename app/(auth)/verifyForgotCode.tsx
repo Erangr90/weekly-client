@@ -38,7 +38,7 @@ export default function VerifyForgotCodeScreen() {
   const router = useRouter();
 
   const onVerify = async (data: verifyForm) => {
-    if (data.code !== code) {
+    if (data.code.trim() !== code) {
       setError("root", {
         message: "קוד האימות שגוי",
       });
@@ -51,7 +51,7 @@ export default function VerifyForgotCodeScreen() {
   return (
     <>
       {/* <Text style={styles.title}>אימות הרשמה</Text> */}
-      <Text style={styles.content}>קוד אימות נשלח לכתובת של חשבונך</Text>
+      <Text style={styles.content}>קוד האימות נשלח לכתובת של חשבונך</Text>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -86,7 +86,7 @@ export default function VerifyForgotCodeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
     gap: 10,
   },

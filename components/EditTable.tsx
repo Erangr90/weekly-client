@@ -1,11 +1,14 @@
 import { Ingredient } from "@/types/ingredient";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import CustomButton from "./CustomButton";
 
 interface TableProps {
   data: Ingredient[];
   onApprove: (id: number, name: string) => void;
   onReject: (id: number) => void;
+  page: number;
+  setPage: (page: number) => void;
 }
 
 export default function ApproveTable(props: TableProps) {
@@ -57,13 +60,24 @@ export default function ApproveTable(props: TableProps) {
           </View>
         </ScrollView>
       </ScrollView>
+      <View style={[styles.row, { gap: "40%" }]}>
+        <CustomButton
+          content="הקודם"
+          onPress={() => props.setPage(props.page - 1)}
+          disabled={props.page === 1}
+        />
+        <CustomButton
+          content="הבא"
+          onPress={() => props.setPage(props.page + 1)}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    // padding: 16,
     backgroundColor: "white",
     flex: 1,
     justifyContent: "center",
@@ -77,6 +91,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
+    justifyContent: "flex-start",
+    paddingBottom: 10,
   },
   rowEven: {
     backgroundColor: "#ffffff",

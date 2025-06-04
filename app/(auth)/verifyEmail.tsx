@@ -42,8 +42,8 @@ export default function VerifyEmailScreen() {
 
   const onVerify = async (data: emailForm) => {
     try {
-      const { code } = await dispatch(verifyEmail(data.email)).unwrap();
-      dispatch(setEmail(data.email));
+      const { code } = await dispatch(verifyEmail(data.email.trim())).unwrap();
+      dispatch(setEmail(data.email.trim()));
       dispatch(setCode(code));
       router.push("/verifyForgotCode");
     } catch (error: any) {
@@ -60,7 +60,13 @@ export default function VerifyEmailScreen() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color="#228B22" />
       </View>
     );
@@ -104,7 +110,7 @@ export default function VerifyEmailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 20,
     gap: 10,
   },
