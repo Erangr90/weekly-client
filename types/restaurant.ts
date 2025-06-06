@@ -4,3 +4,8 @@ export type Restaurant = {
   email: string;
   phone: string;
 };
+
+export type MiniRestaurant = {
+  id: number;
+  name: string;
+};

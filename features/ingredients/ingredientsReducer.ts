@@ -6,7 +6,7 @@ import {
   createIngred,
   deleteIngred,
   deletePending,
-  getAllIngredient,
+  getAllIngredients,
   getAllIngredPage,
   getAllPending,
   getAllPendingLen,
@@ -29,15 +29,15 @@ export const ingredientsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     // --- Get all Ingredients ---
-    builder.addCase(getAllIngredient.fulfilled, (state) => {
+    builder.addCase(getAllIngredients.fulfilled, (state) => {
       state.error = undefined;
       state.loading = false;
     });
-    builder.addCase(getAllIngredient.rejected, (state, action) => {
+    builder.addCase(getAllIngredients.rejected, (state, action) => {
       state.error = action.payload || { message: "Something went wrong" };
       state.loading = false;
     });
-    builder.addCase(getAllIngredient.pending, (state) => {
+    builder.addCase(getAllIngredients.pending, (state) => {
       state.loading = true;
       state.error = undefined;
     });

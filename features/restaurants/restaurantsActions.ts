@@ -1,5 +1,5 @@
 import { ServerError } from "@/types/errors";
-import { Restaurant } from "@/types/restaurant";
+import { MiniRestaurant, Restaurant } from "@/types/restaurant";
 import axiosClient from "@/utils/axiosClient";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
@@ -108,3 +108,22 @@ export const createRestaurant = createAsyncThunk<
     }
   },
 );
+
+export const getAllRestaurants = createAsyncThunk<
+  MiniRestaurant[],
+  void,
+  { rejectValue: ServerError }
+>("restaurant/getAllRestaurants", async (_: void, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosClient.get(`/restaurants/`);
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<ServerError>;
+    if (error.response && error.response.data) {
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue({
+      message: "Error in getAllRestaurants action",
+    });
+  }
+});

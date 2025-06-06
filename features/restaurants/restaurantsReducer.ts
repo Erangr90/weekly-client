@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createRestaurant,
   deleteRestaurant,
+  getAllRestaurants,
   getRestaurantsPage,
   updateRestaurant,
 } from "./restaurantsActions";
@@ -17,8 +18,8 @@ const initialState: restaurantState = {
   error: undefined,
 };
 
-export const ingredientsSlice = createSlice({
-  name: "ingredients",
+export const restaurantSlice = createSlice({
+  name: "restaurant",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -74,6 +75,19 @@ export const ingredientsSlice = createSlice({
       state.loading = true;
       state.error = undefined;
     });
+    // --- Get All Restaurants ---
+    builder.addCase(getAllRestaurants.fulfilled, (state) => {
+      state.error = undefined;
+      state.loading = false;
+    });
+    builder.addCase(getAllRestaurants.rejected, (state, action) => {
+      state.error = action.payload || { message: "Something went wrong" };
+      state.loading = false;
+    });
+    builder.addCase(getAllRestaurants.pending, (state) => {
+      state.loading = true;
+      state.error = undefined;
+    });
   },
 });
-export default ingredientsSlice.reducer;
+export default restaurantSlice.reducer;

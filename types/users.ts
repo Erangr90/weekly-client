@@ -1,12 +1,11 @@
+import { Allergy } from "./allergy";
+import { Ingredient } from "./ingredient";
+
 export type User = {
   id: number;
   fullName: string;
   email: string;
-  allergyIds: number[];
+  allergies: Allergy[];
   role: string;
-  ingredientIds: number[];
-};
-
-export type UserIngr = {
-  ingredientIds: number[];
+  ingredients: Ingredient[];
 };

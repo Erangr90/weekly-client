@@ -4,7 +4,7 @@ import PopupModal from "@/components/modals/AddIngrModal";
 import { getUserIngr, updateUserIng } from "@/features/auth/authActions";
 import {
   addPendingIngr,
-  getAllIngredient,
+  getAllIngredients,
 } from "@/features/ingredients/ingredientsActions";
 import { AppDispatch, RootState } from "@/store";
 import { Ingredient } from "@/types/ingredient";
@@ -77,7 +77,10 @@ export default function DontLikeScreen() {
   const onSubmit = async () => {
     try {
       const { message } = await dispatch(
-        updateUserIng({ userId: String(user!.id!), ids: userIngredients }),
+        updateUserIng({
+          userId: String(user!.id!),
+          ids: userIngredients,
+        }),
       ).unwrap();
       Toast.show({ type: "success", text1: message, position: "bottom" });
       router.push("/home");
@@ -98,7 +101,7 @@ export default function DontLikeScreen() {
 
   const fetchIngredients = async () => {
     try {
-      const res = await dispatch(getAllIngredient()).unwrap();
+      const res = await dispatch(getAllIngredients()).unwrap();
       setIngredients(res);
       setFilterIngredients(res);
     } catch (error) {
@@ -128,8 +131,13 @@ export default function DontLikeScreen() {
   };
 
   const fetchUserIngr = async () => {
-    const res = await dispatch(getUserIngr(user!.id!)).unwrap();
-    setUserIngredients(res.ingredientIds);
+    try {
+      const res = await dispatch(getUserIngr(user!.id!)).unwrap();
+      const temp = res.map((ing) => ing.id);
+      setUserIngredients(temp);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

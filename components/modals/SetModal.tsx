@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    marginBottom: 90,
+    marginBottom: "50%",
     fontWeight: "600",
     alignSelf: "center",
   },

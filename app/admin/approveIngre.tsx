@@ -36,19 +36,19 @@ export default function AdminPendingScreen() {
   };
 
   const onApprove = async (id: number, name: string) => {
-    try {
-      Alert.alert(
-        "האם את/ה בטוח/ה ?", // Title
-        "", // Optional message
-        [
-          {
-            text: "ביטול", // Cancel
-            onPress: () => console.log("User pressed Cancel"),
-            style: "cancel",
-          },
-          {
-            text: "אישור", // OK
-            onPress: async () => {
+    Alert.alert(
+      "האם את/ה בטוח/ה ?", // Title
+      "", // Optional message
+      [
+        {
+          text: "ביטול", // Cancel
+          onPress: () => console.log("User pressed Cancel"),
+          style: "cancel",
+        },
+        {
+          text: "אישור", // OK
+          onPress: async () => {
+            try {
               const { message } = await dispatch(
                 approvePending({ id, name }),
               ).unwrap();
@@ -58,14 +58,14 @@ export default function AdminPendingScreen() {
                 position: "bottom",
               });
               router.push("/admin/approveIngre");
-            },
+            } catch (error) {
+              console.error(error);
+            }
           },
-        ],
-        { cancelable: false }, // Optional: prevent closing the alert by tapping outside
-      );
-    } catch (error) {
-      console.error(error);
-    }
+        },
+      ],
+      { cancelable: false }, // Optional: prevent closing the alert by tapping outside
+    );
   };
 
   const onReject = async (id: number) => {

@@ -74,7 +74,7 @@ export default function DashboardScreen() {
 
       <TouchableOpacity
         key={2}
-        onPress={() => console.log("מנות")}
+        onPress={() => router.push("/admin/dishes")}
         style={styles.gridItem}
       >
         <Text style={styles.text}>מנות</Text>

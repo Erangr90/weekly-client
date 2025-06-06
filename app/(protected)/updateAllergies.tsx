@@ -57,11 +57,16 @@ export default function UpdateAllergiesScreen() {
     }
   };
 
+  const createUserAllergies = () => {
+    const temp = user!.allergies.map((allergy) => allergy.id);
+    setUserAllergies(temp);
+  };
+
   useEffect(() => {
     if (!allergies) {
       fetchAllergies();
+      createUserAllergies();
     }
-    setUserAllergies(user?.allergyIds || []);
   }, []);
 
   if (loading) {

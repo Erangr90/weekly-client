@@ -1,0 +1,74 @@
+import React from "react";
+import {
+  GestureResponderEvent,
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+type DishCardProps = {
+  imageUrl: ImageSourcePropType;
+  // imageUrl: string;
+  title: string;
+  description: string;
+  price: number;
+  restaurant: string;
+  onPress?: (event: GestureResponderEvent) => void;
+};
+
+function DishCard(props: DishCardProps) {
+  const { imageUrl, title, description, onPress, price, restaurant } = props;
+
+  return (
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      {/* <Image source={{ uri: imageUrl }} style={styles.image} /> */}
+      <Image source={imageUrl} style={styles.image} />
+      <View style={styles.content}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{restaurant}</Text>
+        <Text style={styles.description} numberOfLines={3}>
+          {description}
+        </Text>
+        <Text style={styles.description}>
+          {price.toFixed(2)}
+          {` ש"ח`}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
+    elevation: 3,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  image: {
+    width: "40%",
+    height: "100%",
+  },
+  content: {
+    flex: 1,
+    padding: 12,
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
+  },
+});
+
+export default DishCard;

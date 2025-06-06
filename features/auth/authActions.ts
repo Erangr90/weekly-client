@@ -1,6 +1,7 @@
 import { ServerError } from "@/types/errors";
 import { LoginForm, RegisterForm } from "@/types/forms";
-import { User, UserIngr } from "@/types/users";
+import { Ingredient } from "@/types/ingredient";
+import { User } from "@/types/users";
 import axiosClient from "@/utils/axiosClient";
 import {
   deleteExTime,
@@ -226,7 +227,7 @@ export const deleteUser = createAsyncThunk<
 });
 
 export const getUserIngr = createAsyncThunk<
-  UserIngr,
+  Ingredient[],
   number,
   { rejectValue: ServerError }
 >("users/getUserById", async (id: number, { rejectWithValue }) => {

@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 20,
     borderColor: "#ccc",
     textAlign: "right",
     writingDirection: "rtl",

@@ -30,7 +30,7 @@ export const deleteToken = async (): Promise<void> => {
 
 export const saveExTime = async (): Promise<void> => {
   try {
-    const expirationTime = new Date().getTime() + 7 * 24 * 60 * 60 * 1000; // 7 days
+    const expirationTime = new Date().getTime() + 30 * 24 * 60 * 60 * 1000; // 7 days
     await SecureStore.setItemAsync(EX_TIME_KEY, expirationTime.toString());
   } catch (error) {
     console.error("Error saving expirationTime to SecureStore:", error);

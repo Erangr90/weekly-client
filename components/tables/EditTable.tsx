@@ -14,52 +14,57 @@ interface TableProps {
 export default function ApproveTable(props: TableProps) {
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <ScrollView horizontal>
-          <View>
-            {/* Header Row */}
-            <View style={styles.headerRow}>
-              <Text key={1} style={[styles.cell, styles.headerCell]}>
-                שם
-              </Text>
-              <Text key={2} style={[styles.cell, styles.headerCell]}>
-                עריכה
-              </Text>
-            </View>
-
-            {/* Data Rows */}
-            {props.data.map((item, rowIndex) => (
-              <View
-                key={rowIndex}
-                style={[
-                  styles.row,
-                  rowIndex % 2 === 0 ? styles.rowEven : styles.rowOdd,
-                ]}
-              >
-                <Text key={rowIndex + 99} style={styles.cell}>
-                  {item.name}
+      {!props.data || props.data.length === 0 ? (
+        <Text style={styles.title}>אין מרכיבים לאישור</Text>
+      ) : (
+        <ScrollView>
+          <ScrollView horizontal>
+            <View>
+              {/* Header Row */}
+              <View style={styles.headerRow}>
+                <Text key={1} style={[styles.cell, styles.headerCell]}>
+                  שם
                 </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: "40%",
-                    paddingTop: "5%",
-                  }}
-                >
-                  <Pressable
-                    onPress={() => props.onApprove(item.id, item.name)}
-                  >
-                    <Text>✅</Text>
-                  </Pressable>
-                  <Pressable onPress={() => props.onReject(item.id)}>
-                    <Text>❌</Text>
-                  </Pressable>
-                </View>
+                <Text key={2} style={[styles.cell, styles.headerCell]}>
+                  עריכה
+                </Text>
               </View>
-            ))}
-          </View>
+
+              {/* Data Rows */}
+              {props.data.map((item, rowIndex) => (
+                <View
+                  key={rowIndex}
+                  style={[
+                    styles.row,
+                    rowIndex % 2 === 0 ? styles.rowEven : styles.rowOdd,
+                  ]}
+                >
+                  <Text key={rowIndex + 99} style={styles.cell}>
+                    {item.name}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: "40%",
+                      paddingTop: "5%",
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => props.onApprove(item.id, item.name)}
+                    >
+                      <Text>✅</Text>
+                    </Pressable>
+                    <Pressable onPress={() => props.onReject(item.id)}>
+                      <Text>❌</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         </ScrollView>
-      </ScrollView>
+      )}
+
       <View style={[styles.row, { gap: "40%" }]}>
         <CustomButton
           content="הקודם"
@@ -110,5 +115,10 @@ const styles = StyleSheet.create({
   headerCell: {
     fontWeight: "bold",
     color: "white",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: "20%",
   },
 });

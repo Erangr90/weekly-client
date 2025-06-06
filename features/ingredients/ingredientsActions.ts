@@ -4,7 +4,7 @@ import axiosClient from "@/utils/axiosClient";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
-export const getAllIngredient = createAsyncThunk<
+export const getAllIngredients = createAsyncThunk<
   Ingredient[],
   void,
   { rejectValue: ServerError }

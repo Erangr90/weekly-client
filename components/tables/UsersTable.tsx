@@ -15,57 +15,62 @@ export default function UsersTable(props: TableProps) {
   return (
     <>
       <View style={styles.container}>
-        <ScrollView>
-          <ScrollView horizontal>
-            <View>
-              {/* Header Row */}
-              <View style={styles.headerRow}>
-                <Text key={1} style={[styles.cell, styles.headerCell]}>
-                  שם
-                </Text>
-                <Text key={2} style={[styles.cell, styles.headerCell]}>
-                  אימייל
-                </Text>
-                <Text key={3} style={[styles.cell, styles.headerCell]}>
-                  אדמין
-                </Text>
-                <Text key={4} style={[styles.cell, styles.headerCell]}>
-                  עריכה
-                </Text>
-              </View>
-
-              {/* Data Rows */}
-              {props.data.map((item, rowIndex) => (
-                <View
-                  key={rowIndex}
-                  style={[
-                    styles.row,
-                    rowIndex % 2 === 0 ? styles.rowEven : styles.rowOdd,
-                  ]}
-                >
-                  <Text key={rowIndex + 99} style={styles.cell}>
-                    {item.fullName}
+        {!props.data || props.data.length === 0 ? (
+          <Text style={styles.title}>אין משתמשים</Text>
+        ) : (
+          <ScrollView>
+            <ScrollView horizontal>
+              <View>
+                {/* Header Row */}
+                <View style={styles.headerRow}>
+                  <Text key={1} style={[styles.cell, styles.headerCell]}>
+                    שם
                   </Text>
-                  <Text key={rowIndex + 100} style={styles.cell}>
-                    {item.email}
+                  <Text key={2} style={[styles.cell, styles.headerCell]}>
+                    אימייל
                   </Text>
-                  <Text key={rowIndex + 101} style={styles.cell}>
-                    {item.role === "ADMIN" ? "✅" : "❌"}
+                  <Text key={3} style={[styles.cell, styles.headerCell]}>
+                    אדמין
                   </Text>
-                  <Pressable
-                    key={rowIndex + 102}
-                    onPress={() => {
-                      props.onEdit(true);
-                      props.setUser(item);
-                    }}
-                  >
-                    <Text style={styles.cell}>✍️</Text>
-                  </Pressable>
+                  <Text key={4} style={[styles.cell, styles.headerCell]}>
+                    עריכה
+                  </Text>
                 </View>
-              ))}
-            </View>
+
+                {/* Data Rows */}
+                {props.data.map((item, rowIndex) => (
+                  <View
+                    key={rowIndex}
+                    style={[
+                      styles.row,
+                      rowIndex % 2 === 0 ? styles.rowEven : styles.rowOdd,
+                    ]}
+                  >
+                    <Text key={rowIndex + 99} style={styles.cell}>
+                      {item.fullName}
+                    </Text>
+                    <Text key={rowIndex + 100} style={styles.cell}>
+                      {item.email}
+                    </Text>
+                    <Text key={rowIndex + 101} style={styles.cell}>
+                      {item.role === "ADMIN" ? "✅" : "❌"}
+                    </Text>
+                    <Pressable
+                      key={rowIndex + 102}
+                      onPress={() => {
+                        props.onEdit(true);
+                        props.setUser(item);
+                      }}
+                    >
+                      <Text style={styles.cell}>✍️</Text>
+                    </Pressable>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
           </ScrollView>
-        </ScrollView>
+        )}
+
         <View style={[styles.row, { gap: "40%" }]}>
           <CustomButton
             content="הקודם"
@@ -127,5 +132,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    marginBottom: "20%",
   },
 });
