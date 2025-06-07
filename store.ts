@@ -6,6 +6,7 @@ import dishReducer from "./features/dish/dishReducer";
 import ingredientsReducer from "./features/ingredients/ingredientsReducer";
 import restaurantsReducer from "./features/restaurants/restaurantsReducer";
 import signUpReducer from "./features/signUpForm/signUpFormSlice";
+import uploadReducer from "./features/uploads/uploadReducer";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     ingredients: ingredientsReducer,
     restaurants: restaurantsReducer,
     dish: dishReducer,
+    upload: uploadReducer,
   },
 });
 

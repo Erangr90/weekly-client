@@ -1,5 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
+import ImageUploader from "@/components/ImageUploader";
 import PopupModal from "@/components/modals/PopUpModal";
 import { getAllergies } from "@/features/allergy/allergyActions";
 import { createNewDish } from "@/features/dish/dishActions";
@@ -8,18 +9,21 @@ import {
   getAllIngredients,
 } from "@/features/ingredients/ingredientsActions";
 import { getAllRestaurants } from "@/features/restaurants/restaurantsActions";
+import { uploadImage } from "@/features/uploads/uploadActions";
 import { AppDispatch, RootState } from "@/store";
 import { Allergy } from "@/types/allergy";
 import { Ingredient } from "@/types/ingredient";
 import { MiniRestaurant } from "@/types/restaurant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -31,7 +35,6 @@ import {
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
-
 export default function AddDishScreen() {
   const dishSchema = z.object({
     name: z
@@ -114,6 +117,11 @@ export default function AddDishScreen() {
   const [filterIngreds, setFilterIngreds] = useState<Ingredient[]>([]);
 
   const [addShow, setAddShow] = useState(false);
+  const [result, setResult] = useState<
+    ImagePicker.ImagePickerResult | undefined
+  >(undefined);
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const fetchIngred = async () => {
     try {
@@ -246,12 +254,13 @@ export default function AddDishScreen() {
           text: "אישור", // OK
           onPress: async () => {
             try {
+              const cloudUrl = await dispatch(uploadImage(result!)).unwrap();
               const { message } = await dispatch(
                 createNewDish({
                   name: data.name,
                   price: Number(data.price),
                   restaurantId: restaurantId,
-                  image: "",
+                  image: cloudUrl,
                   description: data.description,
                   allergyIds: allergiesIds,
                   ingredientIds: ingredientsIds,
@@ -297,6 +306,14 @@ export default function AddDishScreen() {
         <Text style={styles.title}>הוספת מנה</Text>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.form}>
+            <ImageUploader setImageUrl={setImageUrl} setResult={setResult} />
+            {imageUrl && (
+              <Image
+                source={{ uri: imageUrl }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            )}
             <Text>מסעדה</Text>
             {restaurantId !== 0 && (
               <Text style={{ marginTop: 5, fontWeight: "bold" }}>
@@ -311,26 +328,24 @@ export default function AddDishScreen() {
               onChangeText={(text: string) => setSearchRes(text.trim())}
               placeholderTextColor="gray"
             />
-            <ScrollView contentContainerStyle={styles.selectContainer}>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={restaurantId}
-                  onValueChange={(itemValue) => {
-                    setRestaurantId(itemValue);
-                  }}
-                  style={styles.picker}
-                  itemStyle={styles.item}
-                >
-                  {filterRes.map((rest) => (
-                    <Picker.Item
-                      key={rest.id}
-                      label={rest.name}
-                      value={rest.id}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </ScrollView>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={restaurantId}
+                onValueChange={(itemValue) => {
+                  setRestaurantId(itemValue);
+                }}
+                style={styles.picker}
+                itemStyle={styles.item}
+              >
+                {filterRes.map((rest) => (
+                  <Picker.Item
+                    key={rest.id}
+                    label={rest.name}
+                    value={rest.id}
+                  />
+                ))}
+              </Picker>
+            </View>
             <Text>שם המנה</Text>
             <CustomInput
               control={dishForm.control}
@@ -356,28 +371,26 @@ export default function AddDishScreen() {
               />
               <CustomButton content="הוספה" onPress={() => setAddShow(true)} />
             </View>
-            <ScrollView contentContainerStyle={styles.selectContainer}>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={selectedIngred}
-                  onValueChange={(itemValue) => {
-                    if (!ingredientsIds.includes(itemValue)) {
-                      setIngredientsIds([...ingredientsIds, itemValue]);
-                    }
-                  }}
-                  style={styles.picker}
-                  itemStyle={styles.item}
-                >
-                  {filterIngreds.map((ingred) => (
-                    <Picker.Item
-                      key={ingred.id}
-                      label={ingred.name}
-                      value={ingred.id}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </ScrollView>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={selectedIngred}
+                onValueChange={(itemValue) => {
+                  if (!ingredientsIds.includes(itemValue)) {
+                    setIngredientsIds([...ingredientsIds, itemValue]);
+                  }
+                }}
+                style={styles.picker}
+                itemStyle={styles.item}
+              >
+                {filterIngreds.map((ingred) => (
+                  <Picker.Item
+                    key={ingred.id}
+                    label={ingred.name}
+                    value={ingred.id}
+                  />
+                ))}
+              </Picker>
+            </View>
             <View
               style={{
                 flexDirection: "row",
@@ -417,28 +430,26 @@ export default function AddDishScreen() {
               onChangeText={(text: string) => setSearchAllergy(text.trim())}
               placeholderTextColor="gray"
             />
-            <ScrollView contentContainerStyle={styles.selectContainer}>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={selectedAllergy}
-                  onValueChange={(itemValue) => {
-                    if (!allergiesIds.includes(itemValue)) {
-                      setAllergiesIds([...allergiesIds, itemValue]);
-                    }
-                  }}
-                  style={styles.picker}
-                  itemStyle={styles.item}
-                >
-                  {filterAllergies.map((allergy) => (
-                    <Picker.Item
-                      key={allergy.id}
-                      label={allergy.name}
-                      value={allergy.id}
-                    />
-                  ))}
-                </Picker>
-              </View>
-            </ScrollView>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={selectedAllergy}
+                onValueChange={(itemValue) => {
+                  if (!allergiesIds.includes(itemValue)) {
+                    setAllergiesIds([...allergiesIds, itemValue]);
+                  }
+                }}
+                style={styles.picker}
+                itemStyle={styles.item}
+              >
+                {filterAllergies.map((allergy) => (
+                  <Picker.Item
+                    key={allergy.id}
+                    label={allergy.name}
+                    value={allergy.id}
+                  />
+                ))}
+              </Picker>
+            </View>
             <View
               style={{
                 flexDirection: "row",
@@ -579,5 +590,11 @@ const styles = StyleSheet.create({
     writingDirection: "rtl",
     marginRight: 10,
     color: "black",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    alignSelf: "center",
   },
 });
