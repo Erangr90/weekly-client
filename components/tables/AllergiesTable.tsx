@@ -62,7 +62,9 @@ export default function AllergiesTable(props: TableProps) {
         <View style={[styles.row, { gap: "40%", paddingTop: "40%" }]}>
           <CustomButton
             content="הקודם"
-            onPress={() => props.setPage(props.page - 1)}
+            onPress={() => {
+              if (props.page > 1) props.setPage(props.page - 1);
+            }}
             disabled={props.page === 1}
           />
           <CustomButton

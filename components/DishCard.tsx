@@ -1,37 +1,41 @@
 import React from "react";
-import {
-  GestureResponderEvent,
-  Image,
-  ImageSourcePropType,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type DishCardProps = {
-  imageUrl: ImageSourcePropType;
-  // imageUrl: string;
+  // imageUrl: ImageSourcePropType;
+  imageUrl: string;
   title: string;
   description: string;
   price: number;
   restaurant: string;
-  onPress?: (event: GestureResponderEvent) => void;
+  ingredients?: string;
+  onPress?: () => void;
 };
 
 function DishCard(props: DishCardProps) {
-  const { imageUrl, title, description, onPress, price, restaurant } = props;
+  const {
+    imageUrl,
+    title,
+    description,
+    onPress,
+    price,
+    restaurant,
+    ingredients,
+  } = props;
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
-      {/* <Image source={{ uri: imageUrl }} style={styles.image} /> */}
-      <Image source={imageUrl} style={styles.image} />
+      <Image source={{ uri: imageUrl }} style={styles.image} />
+      {/* <Image source={imageUrl} style={styles.image} /> */}
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{restaurant}</Text>
         <Text style={styles.description} numberOfLines={3}>
           {description}
         </Text>
+        {/* <Text style={styles.description} numberOfLines={3}>
+          {ingredients}
+        </Text> */}
         <Text style={styles.description}>
           {price.toFixed(2)}
           {` ש"ח`}

@@ -3,7 +3,7 @@ import CustomInput from "@/components/CustomInput";
 import ImageUploader from "@/components/ImageUploader";
 import PopupModal from "@/components/modals/PopUpModal";
 import { getAllergies } from "@/features/allergy/allergyActions";
-import { createNewDish } from "@/features/dish/dishActions";
+import { getDishById, updateDish } from "@/features/dish/dishActions";
 import {
   createIngred,
   getAllIngredients,
@@ -12,12 +12,13 @@ import { getAllRestaurants } from "@/features/restaurants/restaurantsActions";
 import { uploadImage } from "@/features/uploads/uploadActions";
 import { AppDispatch, RootState } from "@/store";
 import { Allergy } from "@/types/allergy";
+import { Dish } from "@/types/dish";
 import { Ingredient } from "@/types/ingredient";
 import { MiniRestaurant } from "@/types/restaurant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -35,51 +36,12 @@ import {
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
-export default function AddDishScreen() {
-  const dishSchema = z.object({
-    name: z
-      .string({ message: "שם הוא חובה" })
-      .min(2, "השם חייב להכיל לפחות 2 תווים")
-      .max(50, "השם יכול להכיל עד 50 תווים")
-      .regex(
-        /^[A-Za-z\u0590-\u05FF ]+$/,
-        "השם יכול להכיל רק אותיות באנגלית או בעברית ורווחים",
-      ),
-    price: z
-      .string({ message: "מחיר הוא חובה" })
-      .min(1)
-      .max(6)
-      .regex(/^[0-9]+(\.[0-9]{1,2})?$/, "מחיר לא תקין"),
-    description: z
-      .string({ message: "תיאור הוא חובה" })
-      .min(2, "תיאור חייב להכיל לפחות 2 תווים")
-      .max(500, "תיאור יכול להכיל עד 500 תווים")
-      .regex(
-        /^[A-Za-z\u0590-\u05FF ]+$/,
-        "התיאור יכול להכיל רק אותיות באנגלית או בעברית ורווחים",
-      ),
-  });
 
-  const addIngredSchema = z.object({
-    name: z
-      .string({ message: "שם האלרגיה הוא חובה" })
-      .min(2, "שם האלרגיה חייב להכיל לפחות 2 תווים")
-      .max(50, "שם האלרגיה יכול להכיל עד 50 תווים")
-      .regex(
-        /^[\u0590-\u05FF ]+$/,
-        "שם האלרגיה יכול להכיל רק אותיות בעברית ורווחים",
-      ),
-  });
-
-  const dishForm = useForm({ resolver: zodResolver(dishSchema) });
-  const inngredForm = useForm({ resolver: zodResolver(addIngredSchema) });
-
-  type newDish = z.infer<typeof dishSchema>;
-  type newIngred = z.infer<typeof addIngredSchema>;
-
+export default function EditDishScreen() {
+  const { id } = useLocalSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
+  const { loading } = useSelector((state: RootState) => state.dish);
   const { loading: ingredLoading } = useSelector(
     (state: RootState) => state.ingredients,
   );
@@ -102,6 +64,8 @@ export default function AddDishScreen() {
 
   const [allergies, setAllergies] = useState<Allergy[] | undefined>(undefined);
 
+  const [dish, setDish] = useState<Dish | undefined>(undefined);
+
   const [allergiesIds, setAllergiesIds] = useState<number[]>([]);
   const [filterAllergies, setFilterAllergies] = useState<Allergy[]>([]);
   const [selectedAllergy, setSelectedAllergy] = useState(0);
@@ -122,6 +86,59 @@ export default function AddDishScreen() {
   >(undefined);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  const dishSchema = z.object({
+    name: z
+      .string({ message: "שם הוא חובה" })
+      .min(2, "השם חייב להכיל לפחות 2 תווים")
+      .max(50, "השם יכול להכיל עד 50 תווים")
+      .regex(
+        /^[A-Za-z\u0590-\u05FF ]+$/,
+        "השם יכול להכיל רק אותיות באנגלית או בעברית ורווחים",
+      )
+      .optional(),
+    price: z
+      .string({ message: "מחיר הוא חובה" })
+      .min(1)
+      .max(6)
+      .regex(/^[0-9]+(\.[0-9]{1,2})?$/, "מחיר לא תקין")
+      .optional(),
+    description: z
+      .string({ message: "תיאור הוא חובה" })
+      .min(2, "תיאור חייב להכיל לפחות 2 תווים")
+      .max(500, "תיאור יכול להכיל עד 500 תווים")
+      .regex(
+        /^[A-Za-z\u0590-\u05FF ]+$/,
+        "התיאור יכול להכיל רק אותיות באנגלית או בעברית ורווחים",
+      )
+      .optional(),
+  });
+
+  const addIngredSchema = z.object({
+    name: z
+      .string({ message: "שם האלרגיה הוא חובה" })
+      .min(2, "שם האלרגיה חייב להכיל לפחות 2 תווים")
+      .max(50, "שם האלרגיה יכול להכיל עד 50 תווים")
+      .regex(
+        /^[\u0590-\u05FF ]+$/,
+        "שם האלרגיה יכול להכיל רק אותיות בעברית ורווחים",
+      ),
+  });
+
+  const dishForm = useForm({ resolver: zodResolver(dishSchema) });
+  const inngredForm = useForm({ resolver: zodResolver(addIngredSchema) });
+
+  type newDish = z.infer<typeof dishSchema>;
+  type newIngred = z.infer<typeof addIngredSchema>;
+
+  const fetchDish = async () => {
+    try {
+      const res = await dispatch(getDishById(id as string)).unwrap();
+      setDish(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchIngred = async () => {
     try {
@@ -190,7 +207,10 @@ export default function AddDishScreen() {
                 text1: message,
                 position: "bottom",
               });
-              router.push("/admin/addDish");
+              router.push({
+                pathname: `/admin/dish/[id]/edit`,
+                params: { id: dish!.id.toString() },
+              });
             } catch (error: any) {
               console.error(error);
               Toast.show({
@@ -240,7 +260,7 @@ export default function AddDishScreen() {
     }
   }, [ingredients, restaurants, allergies]);
 
-  const onAdd = async (data: newDish) => {
+  const onEdit = async (data: newDish) => {
     Alert.alert(
       "האם את/ה בטוח/ה ?", // Title
       "", // Optional message
@@ -254,38 +274,18 @@ export default function AddDishScreen() {
           text: "אישור", // OK
           onPress: async () => {
             try {
-              if (!allergiesIds || allergiesIds.length === 0) {
-                Toast.show({
-                  type: "error",
-                  text1: "בחירת אלגריות היא חובה",
-                  position: "bottom",
-                });
-                return;
+              let cloudUrl = null;
+              if (result) {
+                cloudUrl = await dispatch(uploadImage(result!)).unwrap();
               }
-              if (!ingredientsIds || ingredientsIds.length === 0) {
-                Toast.show({
-                  type: "error",
-                  text1: "בחירת מרכיבים היא חובה",
-                  position: "bottom",
-                });
-                return;
-              }
-              if (!restaurantId || restaurantId === 0) {
-                Toast.show({
-                  type: "error",
-                  text1: "בחירת מסעדה היא חובה",
-                  position: "bottom",
-                });
-                return;
-              }
-              const cloudUrl = await dispatch(uploadImage(result!)).unwrap();
               const { message } = await dispatch(
-                createNewDish({
-                  name: data.name,
-                  price: Number(data.price),
+                updateDish({
+                  id: dish!.id,
+                  name: data.name || dish!.name,
+                  price: Number(data.price) || dish!.price,
                   restaurantId: restaurantId,
-                  image: cloudUrl,
-                  description: data.description,
+                  image: cloudUrl || dish!.image,
+                  description: data.description || dish!.description,
                   allergyIds: allergiesIds,
                   ingredientIds: ingredientsIds,
                 }),
@@ -311,13 +311,25 @@ export default function AddDishScreen() {
     );
   };
 
+  useEffect(() => {
+    if (!dish) {
+      fetchDish();
+    } else {
+      setRestaurantId(dish.restaurant.id);
+      setIngredientsIds(dish.ingredients.map((ingred) => ingred.id));
+      setAllergiesIds(dish.allergies.map((allergy) => allergy.id));
+    }
+  }, [dish]);
+
   if (
+    loading ||
+    !dish ||
     ingredLoading ||
     restLoading ||
     allergyLoading ||
-    ingredients === undefined ||
-    restaurants === undefined ||
-    allergies === undefined
+    !ingredients ||
+    !restaurants ||
+    !allergies
   ) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -327,17 +339,37 @@ export default function AddDishScreen() {
   } else {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>הוספת מנה</Text>
+        <Text style={styles.title}>עריכת מנה: {dish.name}</Text>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.form}>
-            {imageUrl && (
-              <Image
-                source={{ uri: imageUrl }}
-                style={styles.image}
-                resizeMode="cover"
-              />
+            {dish.image ? (
+              <>
+                <Image
+                  source={{ uri: dish.image }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+                <ImageUploader
+                  setImageUrl={setImageUrl}
+                  setResult={setResult}
+                />
+              </>
+            ) : (
+              <>
+                {imageUrl && (
+                  <Image
+                    source={{ uri: imageUrl }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                )}
+                <ImageUploader
+                  setImageUrl={setImageUrl}
+                  setResult={setResult}
+                />
+              </>
             )}
-            <ImageUploader setImageUrl={setImageUrl} setResult={setResult} />
+
             <Text style={styles.miniTitle}>מסעדה</Text>
             {restaurantId !== 0 && (
               <Text style={{ marginTop: 5, fontWeight: "bold" }}>
@@ -370,11 +402,11 @@ export default function AddDishScreen() {
                 ))}
               </Picker>
             </View>
-            <Text style={styles.miniTitle}>שם המנה</Text>
+            <Text style={styles.miniTitle}>שם המנה: {dish.name}</Text>
             <CustomInput
               control={dishForm.control}
               name="name"
-              placeholder="שם המנה"
+              placeholder={dish.name}
               autoFocus
             />
             <Text style={styles.miniTitle}>מרכיבים</Text>
@@ -420,6 +452,7 @@ export default function AddDishScreen() {
                 flexDirection: "row",
                 gap: 10,
                 marginTop: 10,
+                marginBottom: 10,
                 maxWidth: "90%",
                 flexWrap: "wrap",
               }}
@@ -505,27 +538,30 @@ export default function AddDishScreen() {
                   </View>
                 ))}
             </View>
-            <Text style={styles.miniTitle}>מחיר</Text>
+            <Text style={styles.miniTitle}>
+              מחיר: {dish.price.toFixed(2)}
+              {` ש"ח`}
+            </Text>
             <CustomInput
               control={dishForm.control}
               name="price"
-              placeholder="מחיר"
+              placeholder={dish.price.toString()}
               keyboardType="decimal-pad"
             />
             <Text style={styles.miniTitle}>תיאור</Text>
             <CustomInput
               control={dishForm.control}
               name="description"
-              placeholder="תיאור"
+              placeholder={dish.description}
               multiline={true}
               numberOfLines={4}
               style={styles.textArea}
             />
           </View>
           <CustomButton
-            content="הוספה"
+            content="שמירה"
             style={{ marginTop: 20 }}
-            onPress={dishForm.handleSubmit(onAdd)}
+            onPress={dishForm.handleSubmit(onEdit)}
           />
         </ScrollView>
         <PopupModal

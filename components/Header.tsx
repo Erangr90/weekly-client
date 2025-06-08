@@ -74,14 +74,6 @@ export default function Header() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          key={5}
-          onPress={() => console.log("זמנים")}
-          style={styles.navItem}
-        >
-          <Text style={styles.text}>זמנים</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
           key={6}
           onPress={async () => dispatch(logout()).unwrap()}
           style={styles.navItem}
