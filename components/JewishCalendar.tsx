@@ -1,7 +1,7 @@
 // import PopupModal from "@/components/modals/PopUpModal";
 import { getUserDishes } from "@/features/dish/dishActions";
 import { AppDispatch, RootState } from "@/store";
-import { Dish } from "@/types/dish";
+import { Dish, MiniDish } from "@/types/dish";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -20,7 +20,15 @@ import CustomButton from "./CustomButton";
 import DishCard from "./DishCard";
 import ScrollModal from "./modals/ScrollModal";
 
-export default function JewishCalendar() {
+interface CalendarProps {
+  setShowDisplay: (bol: boolean) => void;
+  setDish: (dish: MiniDish) => void;
+}
+
+export default function JewishCalendar({
+  setShowDisplay,
+  setDish,
+}: CalendarProps) {
   const [markedDates, setMarkedDates] = useState({});
   const [holidayMap, setHolidayMap] = useState<Record<string, string>>({});
   const [modalVisible, setModalVisible] = useState(false);
@@ -225,15 +233,24 @@ export default function JewishCalendar() {
                   price={dish.price}
                   description={dish.description}
                   restaurant={dish.restaurant.name}
-                  // ingredients={dish.ingredients
-                  //   .map((ingres) => ingres.name)
-                  //   .join(", ")}
-                  // onPress={() =>
-                  //   router.push({
-                  //     pathname: `/dish/[id]/display`,
-                  //     params: { id: dish.id.toString() },
-                  //   })
-                  // }
+                  onPress={() => {
+                    setShowDisplay(true);
+                    setDish({
+                      name: dish.name,
+                      image: dish.image,
+                      price: dish.price,
+                      description: dish.description,
+                      id: dish.id,
+                      restaurantId: dish.restaurant.id,
+                      restaurant: dish.restaurant.name,
+                      ingredients: dish.ingredients.map(
+                        (ingres) => ingres.name,
+                      ),
+                      allergies: dish.allergies.map(
+                        (allergie) => allergie.name,
+                      ),
+                    });
+                  }}
                 />
               ))}
             <View style={[styles.row, { gap: "40%", paddingTop: 10 }]}>

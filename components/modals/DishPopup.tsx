@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -18,7 +17,7 @@ interface PopupModalProps {
   children?: React.ReactNode;
 }
 
-const PopupModal: React.FC<PopupModalProps> = ({
+const DishPopup: React.FC<PopupModalProps> = ({
   visible,
   onClose,
   title = "This is a popup!",
@@ -37,9 +36,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
       >
         <View style={styles.popup}>
           <Text style={styles.text}>{title}</Text>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.content}>{children}</View>
-          </ScrollView>
+          <View style={styles.content}>{children}</View>
           <CustomButton
             content="סגירה"
             onPress={onClose}
@@ -51,7 +48,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
   );
 };
 
-export default PopupModal;
+export default DishPopup;
 
 const styles = StyleSheet.create({
   overlay: {
@@ -77,7 +74,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    marginTop: 10,
+    marginTop: "10%",
   },
   centerContent: {
     flex: 1,

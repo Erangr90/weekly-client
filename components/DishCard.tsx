@@ -30,7 +30,7 @@ function DishCard(props: DishCardProps) {
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{restaurant}</Text>
-        <Text style={styles.description} numberOfLines={3}>
+        <Text style={styles.description} numberOfLines={5}>
           {description}
         </Text>
         {/* <Text style={styles.description} numberOfLines={3}>
@@ -56,8 +56,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   image: {
-    width: "40%",
-    height: "100%",
+    width: "45%",
+    // maxHeight:100,
+    // height: "40%",
+    resizeMode: "cover",
   },
   content: {
     flex: 1,
@@ -65,12 +67,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "600",
     marginBottom: 4,
   },
   description: {
-    fontSize: 14,
+    fontSize: 10,
     color: "#666",
   },
 });

@@ -8,6 +8,7 @@ import PopupModal from "./modals/SetModal";
 
 export default function Header() {
   const { user } = useSelector((state: RootState) => state.auth);
+  const { cart } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function Header() {
       </TouchableOpacity>
     </View>
   );
+
   return (
     <>
       <View style={styles.header}>
@@ -73,9 +75,26 @@ export default function Header() {
           <Text style={styles.text}>הגדרות</Text>
         </TouchableOpacity>
 
+        {/* {cart && cart.orderItems.length > 0 && (
+          <TouchableOpacity
+            key={7}
+            onPress={() => router.push("/cart")}
+            style={[
+              styles.navItem,
+              { flexDirection: "row", alignItems: "center" },
+            ]}
+          >
+            <Image
+              source={require("@/assets/images/shopping-cart.png")}
+              style={{ width: 20, height: 20 }}
+            />
+            <Text style={styles.text}>{`(${cart.orderItems.length})`}</Text>
+          </TouchableOpacity>
+        )} */}
+
         <TouchableOpacity
           key={6}
-          onPress={async () => dispatch(logout()).unwrap()}
+          onPress={async () => await dispatch(logout()).unwrap()}
           style={styles.navItem}
         >
           <Text style={styles.text}>התנתקות</Text>

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import allergyReducer from "./features/allergy/allergyReducer";
 import authReducer from "./features/auth/authReducer";
+import cartReducer from "./features/cart/cartSlice";
 import counterReducer from "./features/counter/counterSlice";
 import dishReducer from "./features/dish/dishReducer";
 import ingredientsReducer from "./features/ingredients/ingredientsReducer";
@@ -18,6 +19,7 @@ export const store = configureStore({
     restaurants: restaurantsReducer,
     dish: dishReducer,
     upload: uploadReducer,
+    cart: cartReducer,
   },
 });
 

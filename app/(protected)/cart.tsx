@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 
-export default function DishDisplayScreen() {
+export default function CartScreen() {
   return (
     <View>
-      <Text>Dish Display Screen</Text>
+      <Text>Cart Screen</Text>
     </View>
   );
 }

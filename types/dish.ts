@@ -12,6 +12,15 @@ export type CreateDish = {
   ingredientIds: number[];
 };
 
+export type RealDish = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  restaurantId: number;
+};
+
 export type Dish = {
   id: number;
   name: string;
@@ -21,6 +30,18 @@ export type Dish = {
   restaurant: MiniRestaurant;
   allergies: Allergy[];
   ingredients: Ingredient[];
+};
+
+export type MiniDish = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  restaurant: string;
+  restaurantId: number;
+  allergies: string[];
+  ingredients: string[];
 };
 
 export type UpdateDish = {

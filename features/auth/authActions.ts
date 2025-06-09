@@ -2,6 +2,7 @@ import { ServerError } from "@/types/errors";
 import { LoginForm, RegisterForm } from "@/types/forms";
 import { Ingredient } from "@/types/ingredient";
 import { User } from "@/types/users";
+import { clearCartFromStorage } from "@/utils/asyncStorage";
 import axiosClient from "@/utils/axiosClient";
 import {
   deleteExTime,
@@ -11,6 +12,7 @@ import {
 } from "@/utils/secureStore";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
+import { clearCart } from "../cart/cartSlice";
 
 export const login = createAsyncThunk<
   { user: User; token: string },
@@ -54,7 +56,8 @@ export const logout = createAsyncThunk("auth/logout", async () => {
   try {
     await deleteToken();
     await deleteExTime();
-    return;
+    await clearCartFromStorage();
+    clearCart();
   } catch (error) {
     console.error(error);
   }
