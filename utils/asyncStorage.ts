@@ -25,7 +25,7 @@ export const getCartFromStorage = async () => {
 
 export const clearCartFromStorage = async () => {
   try {
-    await AsyncStorage.setItem("cart", "");
+    await AsyncStorage.removeItem("cart");
   } catch (error) {
     console.error("Clearing cart failed", error);
   }

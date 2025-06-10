@@ -12,7 +12,6 @@ import {
 } from "@/utils/secureStore";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { clearCart } from "../cart/cartSlice";
 
 export const login = createAsyncThunk<
   { user: User; token: string },
@@ -57,7 +56,6 @@ export const logout = createAsyncThunk("auth/logout", async () => {
     await deleteToken();
     await deleteExTime();
     await clearCartFromStorage();
-    clearCart();
   } catch (error) {
     console.error(error);
   }

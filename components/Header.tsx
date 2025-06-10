@@ -1,8 +1,9 @@
 import { logout } from "@/features/auth/authActions";
+import { clearCart } from "@/features/cart/cartSlice";
 import { AppDispatch, RootState } from "@/store";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import PopupModal from "./modals/SetModal";
 
@@ -75,7 +76,7 @@ export default function Header() {
           <Text style={styles.text}>הגדרות</Text>
         </TouchableOpacity>
 
-        {/* {cart && cart.orderItems.length > 0 && (
+        {cart && cart.orderItems.length > 0 && (
           <TouchableOpacity
             key={7}
             onPress={() => router.push("/cart")}
@@ -90,11 +91,14 @@ export default function Header() {
             />
             <Text style={styles.text}>{`(${cart.orderItems.length})`}</Text>
           </TouchableOpacity>
-        )} */}
+        )}
 
         <TouchableOpacity
           key={6}
-          onPress={async () => await dispatch(logout()).unwrap()}
+          onPress={async () => {
+            await dispatch(logout()).unwrap();
+            dispatch(clearCart());
+          }}
           style={styles.navItem}
         >
           <Text style={styles.text}>התנתקות</Text>

@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -80,79 +81,81 @@ export default function SignInScreen() {
       <ActivityIndicator size="large" color="#228B22" />
     </View>
   ) : (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <>
-        <Text style={styles.title}>התחברות</Text>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <>
+          <Text style={styles.title}>התחברות</Text>
 
-        <View style={styles.form}>
-          <Text>כתובת אימייל</Text>
-          <CustomInput
-            control={control}
-            name="email"
-            placeholder="כתובת אימייל"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            autoComplete="email"
-            placeholderTextColor="gray"
-          />
-          <Text>סיסמא</Text>
-          <CustomInput
-            control={control}
-            name="password"
-            placeholder="סיסמא"
-            secureTextEntry={true}
-            autoCapitalize="none"
-            placeholderTextColor="gray"
-          />
-          {errors.root && (
-            <Text
-              style={{
-                color: "crimson",
-                marginBottom: 10,
-              }}
-            >
-              {"\u2022 "}
-              {errors.root.message}
-            </Text>
-          )}
-          {/* In case there is array of errors messages from the server */}
-          {serverErrors &&
-            serverErrors.length > 0 &&
-            serverErrors.map((error, index) => (
+          <View style={styles.form}>
+            <Text>כתובת אימייל</Text>
+            <CustomInput
+              control={control}
+              name="email"
+              placeholder="כתובת אימייל"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              placeholderTextColor="gray"
+            />
+            <Text>סיסמא</Text>
+            <CustomInput
+              control={control}
+              name="password"
+              placeholder="סיסמא"
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor="gray"
+            />
+            {errors.root && (
               <Text
-                key={index}
                 style={{
                   color: "crimson",
                   marginBottom: 10,
                 }}
               >
                 {"\u2022 "}
-                {error}
+                {errors.root.message}
               </Text>
-            ))}
-        </View>
-        <CustomButton
-          content="התחבר"
-          onPress={handleSubmit(onSignIn)}
-          style={{ marginTop: 20 }}
-        />
+            )}
+            {/* In case there is array of errors messages from the server */}
+            {serverErrors &&
+              serverErrors.length > 0 &&
+              serverErrors.map((error, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    color: "crimson",
+                    marginBottom: 10,
+                  }}
+                >
+                  {"\u2022 "}
+                  {error}
+                </Text>
+              ))}
+          </View>
+          <CustomButton
+            content="התחבר"
+            onPress={handleSubmit(onSignIn)}
+            style={{ marginTop: 20 }}
+          />
 
-        <Pressable onPress={() => router.push("/verifyEmail")}>
-          <Text style={styles.link}>שכחתי סיסמא</Text>
-        </Pressable>
-
-        <View style={styles.row}>
-          <Text>אין לך חשבון?</Text>
-          <Pressable onPress={() => router.push("/signUp")}>
-            <Text style={styles.link2}>הירשם עכשיו</Text>
+          <Pressable onPress={() => router.push("/verifyEmail")}>
+            <Text style={styles.link}>שכחתי סיסמא</Text>
           </Pressable>
-        </View>
-      </>
-      <StatusBar style="auto" />
-    </KeyboardAvoidingView>
+
+          <View style={styles.row}>
+            <Text>אין לך חשבון?</Text>
+            <Pressable onPress={() => router.push("/signUp")}>
+              <Text style={styles.link2}>הירשם עכשיו</Text>
+            </Pressable>
+          </View>
+        </>
+        <StatusBar style="auto" />
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
@@ -191,7 +194,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
     gap: 5,
   },
   link2: {
